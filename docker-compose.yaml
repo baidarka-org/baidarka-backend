@@ -1,0 +1,91 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: baidarka.postgres.dev
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    volumes:
+      - /home/lib/baidarka/postgres:/var/lib/baidarka/postgres
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: baidarka_data
+
+  keycloak:
+    container_name: baidarka.keycloak.dev
+    image: custom-keycloak-v23:latest
+    volumes:
+      - /home/lib/baidarka/keycloak:/var/lib/baidarka/keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: 26013
+      KEYCLOAK_MANAGEMENT_PASSWORD: 26013
+      KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_HOST: postgres
+      KEYCLOAK_DATABASE_NAME: baidarka_data
+      KEYCLOAK_CREATE_ADMIN_USER: 'true'
+      KEYCLOAK_DATABASE_USER: postgres
+      KEYCLOAK_DATABASE_PASSWORD: postgres
+    entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev", "--features=preview"]
+    depends_on:
+      postgres:
+        condition: service_started
+      kafka:
+        condition: service_started
+    ports:
+      - '8080:8080'
+    restart: unless-stopped
+
+  zookeeper:
+    container_name: baidarka.zookepeer.dev
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2500
+
+  kafka:
+    container_name: baidarka.kafka.dev
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      zookeeper:
+        condition: service_started
+    ports:
+      - '9092:9092'
+      - '9091:9091'
+    expose:
+      - '29092'
+    volumes:
+      - /home/lib/kafka:/var/lib/kafka
+      - ./certs/:/etc/kafka/secrets/certs
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_INTER_BROKER_LISTENER_NAME: PUBLIC
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: LOCAL://localhost:9091, PUBLIC://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LOCAL:PLAINTEXT, PUBLIC:PLAINTEXT
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_SSL_CLIENT_AUTH: 'required'
+      KAFKA_SSL_KEYSTORE_FILENAME: '/certs/kafka.server.keystore.jks'
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: '/certs/kafka_keystore_credentials'
+      KAFKA_SSL_KEY_CREDENTIALS: '/certs/kafka_sslkey_credentials'
+      KAFKA_SSL_TRUSTSTORE_FILENAME: '/certs/kafka.server.truststore.jks'
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: '/certs/kafka_truststore_credentials'
+
+  init-kafka:
+    container_name: kafka.init
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "      
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic REGISTER --replication-factor 1 --partitions 1 \
+      && \
+      echo -e 'Successfully created the following topics:' \
+      && \
+      kafka-topics --bootstrap-server kafka:29092 --list 
+      "

@@ -1,0 +1,28 @@
+server:
+  port: ${PORT:3030}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:5432/baidarka_data_client
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+
+  liquibase:
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+  kafka:
+    consumer:
+      groupId: register-listener
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    bootstrap-servers: kafka:9092
+
+keycloak:
+  realm: ${REALM}
+  resource: ${CLIENT}
+  auth-server-url: http://${KEYCLOAK_HOST}:8080
+  ssl-required: external
+

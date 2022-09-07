@@ -1,0 +1,77 @@
+databaseChangeLog:
+  - changeSet:
+      id: init-3
+      author: Nikita L.
+      changes:
+        - createTable:
+            tableName: primary_user_photo
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: path
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_default
+                  type: boolean
+                  constraints:
+                    nullable: false
+                    defaultValue: false
+              - column:
+                  name: uploaded_at
+                  type: timestamp
+                  defaultValueComputed: current_timestamp()
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: path_u_indx
+            tableName: primary_user_photo
+            schemaName: public
+            unique: true
+            column:
+              name: path
+        - sql: #todo migrate photo path to environment variable
+            sql: insert into primary_user_photo (path, is_default) values ('6178abb3-7f12-9960-36b3-d49d025ebfa7.png', true)
+
+      #  - createFunction:
+      #      path: classpath:/db/changelog/migration/get_default_photo_uuid_func.sql
+
+        - createTable:
+            tableName: primary_user
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_entity_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: saved_at
+                  type: timestamp
+                  defaultValueComputed: current_timestamp()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: primary_user_photo_id
+                  type: uuid
+                  constraints:
+                    defaultValueComputed: get_default_photo_uuid()
+                    nullable: false
+                    foreignKeyName: fk_primary_user_photo
+                    references: primary_user_photo(id)
+                    onUpdate: true
+                    onDelete: set default #todo default on is_default is not working

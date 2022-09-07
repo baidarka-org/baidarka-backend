@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - property:
+      name: author
+      value: Nikita L.
+
+  - changeSet:
+      id: init
+      author: ${author}
+      changes:
+        - createTable:
+            tableName: primary_user_photo
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: path
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: uploaded_at
+                  type: timestamp
+                  defaultValueComputed: current_timestamp()
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: primary_user
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_entity_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: saved_at
+                  type: timestamp
+                  defaultValueComputed: current_timestamp()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: primary_user_photo_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    unique: true
+                    foreignKeyName: fk_primary_user_photo
+                    references: primary_user_photo(id)
+                    onUpdate: true
