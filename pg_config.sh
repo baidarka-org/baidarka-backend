@@ -1,0 +1,9 @@
+echo "shared_preload_libraries = 'pg_cron'" >> /var/lib/postgresql/data/postgresql.conf && \
+echo "cron.database_name = 'baidarka_data_client'" >> /var/lib/postgresql/data/postgresql.conf && \
+echo "cron.use_background_workers = on" >> /var/lib/postgresql/data/postgresql.conf && \
+echo "max_worker_processes = 20" >> /var/lib/postgresql/data/postgresql.conf && \
+echo "log_statement = 'all'" >> /var/lib/postgresql/data/postgresql.conf && \
+echo "log_directory = 'pg_log'" >> /var/lib/postgresql/data/postgresql.conf && \
+echo "log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'" >> /var/lib/postgresql/data/postgresql.conf && \
+echo "logging_collector = on" >> /var/lib/postgresql/data/postgresql.conf && \
+echo "log_min_error_statement = error" >> /var/lib/postgresql/data/postgresql.conf
