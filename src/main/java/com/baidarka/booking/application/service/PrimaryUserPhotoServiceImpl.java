@@ -1,8 +1,8 @@
 package com.baidarka.booking.application.service;
 
-import com.baidarka.booking.domain.photo.projection.PrimaryUserPhotoProjection;
+import com.baidarka.booking.domain.photo.projection.PhotoProjection;
 import com.baidarka.booking.domain.photo.repository.PrimaryUserPhotoRepository;
-import com.baidarka.booking.domain.photo.service.PrimaryUserPhotoService;
+import com.baidarka.booking.domain.photo.service.PhotoService;
 import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
@@ -13,11 +13,11 @@ import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_ACCESS_DE
 
 @Service
 @RequiredArgsConstructor
-public class PrimaryUserPhotoServiceImpl implements PrimaryUserPhotoService {
+public class PrimaryUserPhotoServiceImpl implements PhotoService {
     private final PrimaryUserPhotoRepository repository;
 
     @Override
-    public void save(PrimaryUserPhotoProjection projection, String keycloakUserId) {
+    public void save(PhotoProjection projection, String keycloakUserId) {
         try {
             repository.update(
                     projection.getId(),

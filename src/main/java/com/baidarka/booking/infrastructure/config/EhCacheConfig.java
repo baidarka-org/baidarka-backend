@@ -1,7 +1,7 @@
 package com.baidarka.booking.infrastructure.config;
 
 import com.baidarka.booking.application.listener.EhCacheListener;
-import com.baidarka.booking.interfaces.dto.DownloadPrimaryUserPhotoResponse;
+import com.baidarka.booking.interfaces.dto.DownloadPhotoResponse;
 import lombok.RequiredArgsConstructor;
 import org.ehcache.config.CacheConfiguration;
 import org.ehcache.config.builders.CacheEventListenerConfigurationBuilder;
@@ -24,14 +24,14 @@ import static org.ehcache.jsr107.Eh107Configuration.fromEhcacheCacheConfiguratio
 @Configuration
 @RequiredArgsConstructor
 public class EhCacheConfig {
-    public static final String CACHE = "primaryUserPhotoResponseCache";
+    public static final String CACHE = "photoResponseCache";
     private final EhCacheListener listener;
 
     @Bean
     public CacheManager cacheManager() {
         final var cacheManager = getCachingProvider().getCacheManager();
 
-        javax.cache.configuration.Configuration<String, DownloadPrimaryUserPhotoResponse> config =
+        javax.cache.configuration.Configuration<String, DownloadPhotoResponse> config =
                 fromEhcacheCacheConfiguration(getCacheConfig());
 
         cacheManager.createCache(CACHE, config);
@@ -39,13 +39,13 @@ public class EhCacheConfig {
         return cacheManager;
     }
 
-    private CacheConfiguration<String, DownloadPrimaryUserPhotoResponse> getCacheConfig() {
+    private CacheConfiguration<String, DownloadPhotoResponse> getCacheConfig() {
         final var pool = newResourcePoolsBuilder()
                 .offheap(10, MB)
                 .build();
 
         return newCacheConfigurationBuilder(
-                String.class, DownloadPrimaryUserPhotoResponse.class, pool)
+                String.class, DownloadPhotoResponse.class, pool)
                 .withExpiry(timeToIdleExpiration(Duration.ofHours(1)))
                 .withService(getCacheEventListenerBuilder())
                 .build();

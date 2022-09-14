@@ -7,7 +7,7 @@ import java.time.Instant;
 
 @Value
 @Builder
-public class DownloadPrimaryUserPhotoResponse {
-    String photoURL;
+public class DownloadPhotoResponse {
+    String presignedUrl;
     Instant expiresAt;
 }
