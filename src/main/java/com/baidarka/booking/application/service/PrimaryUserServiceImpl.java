@@ -1,5 +1,6 @@
 package com.baidarka.booking.application.service;
 
+import com.baidarka.booking.domain.signup.projection.PrimaryUserProjection;
 import com.baidarka.booking.domain.signup.repository.PrimaryUserRepository;
 import com.baidarka.booking.domain.signup.service.PrimaryUserService;
 import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
@@ -31,5 +32,10 @@ public class PrimaryUserServiceImpl implements PrimaryUserService {
                     .code(DATA_ACCESS_DENIED)
                     .get();
         }
+    }
+
+    @Override
+    public Long getPrimaryUserIdBy(String keycloakUserId) {
+        return repository.findPrimaryUserIdBy(keycloakUserId);
     }
 }

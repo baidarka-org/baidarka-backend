@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Value
 @Builder
-public class PrimaryUserPhotoProjection {
+public class PhotoProjection {
     UUID id;
     String key;
     boolean isDefault;

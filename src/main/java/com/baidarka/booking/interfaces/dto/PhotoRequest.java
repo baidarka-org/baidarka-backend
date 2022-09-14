@@ -4,6 +4,6 @@ import lombok.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 @Value
-public class PrimaryUserPhotoRequest {
+public class PhotoRequest {
     MultipartFile photo;
 }

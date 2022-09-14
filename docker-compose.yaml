@@ -2,8 +2,8 @@ version: "3.8"
 
 services:
   postgres:
-    container_name: baidarka.postgres.dev
-    image: postgres:latest
+    container_name: baidarka.postgres.dev.v3
+    image: custom-postgres:latest
     ports:
       - '5432:5432'
     volumes:
