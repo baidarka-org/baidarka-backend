@@ -26,6 +26,12 @@ public enum ErrorCode {
         public BaseRuntimeException get(String message) {
             return new DataAccessException(message);
         }
+    },
+    UNKNOWN {
+        @Override
+        public BaseRuntimeException get(String message) {
+            return new UnknownException(message);
+        }
     };
 
     public abstract BaseRuntimeException get(String message);

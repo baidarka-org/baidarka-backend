@@ -5,10 +5,17 @@ import com.baidarka.booking.domain.order.service.AdvertisementOrderService;
 import com.baidarka.booking.domain.signup.service.PrimaryUserService;
 import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
 import com.baidarka.booking.infrastructure.model.ErrorCode;
+import com.baidarka.booking.interfaces.dto.FreeSeatsByDateRequest;
+import com.baidarka.booking.interfaces.dto.FreeSeatsByDateResponse;
 import com.baidarka.booking.interfaces.dto.OrderRequest;
 import com.baidarka.booking.interfaces.mapper.OrderRequestToAdvertisementOrderProjectionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_IS_NOT_VALID;
 
 @Component
 @RequiredArgsConstructor
@@ -25,11 +32,32 @@ public class OrderOperation {
                     .get();
         }
 
-        final var primaryUserId = primaryUserService.getPrimaryUserIdBy(keycloakUserId);
+        final var primaryUserId =
+                primaryUserService.getPrimaryUserIdBy(keycloakUserId);
+
+        if (advertisementOrderService.isAlreadyBookedBy(
+                request.getAdvertisementId(),
+                primaryUserId,
+                request.getArrival(), request.getDeparture())) {
+            throw ExceptionFactory.factory()
+                    .code(DATA_IS_NOT_VALID)
+                    .message("You have already booked this advertisement on such dates")
+                    .get();
+        }
+
+        final var advertisementName =
+                advertisementService.getAdvertisementNameBy(request.getAdvertisementId());
 
         final var advertisementOrder =
-                OrderRequestToAdvertisementOrderProjectionMapper.MAPPER.mapFrom(request, primaryUserId);
+                OrderRequestToAdvertisementOrderProjectionMapper.MAPPER.map(request, primaryUserId, advertisementName);
 
         advertisementOrderService.save(advertisementOrder);
+    }
+
+    public FreeSeatsByDateResponse getFreeSeats(FreeSeatsByDateRequest request) {
+        return FreeSeatsByDateResponse.builder()
+                .seat(advertisementOrderService.getFreeSeatBy(request.getDate(), request.getAdvertisementId()))
+                .date(request.getDate())
+                .build();
     }
 }

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.baidarka.booking.infrastructure.utility.RoleExpression.AUTHENTICATED;
+import static com.baidarka.booking.infrastructure.utility.RoleExpression.REPRESENTATIVE;
 
 @RestController
 @RequestMapping("api/v1/advertisement")
@@ -24,7 +25,7 @@ public class AdvertisementController {
     private final AdvertisementOperation operation;
 
     @PostMapping
-    @PreAuthorize(AUTHENTICATED)
+    @PreAuthorize(REPRESENTATIVE)
     public ResponseEntity<CreateAdvertisementResponse> create(@AuthenticationPrincipal KeycloakPrincipal<?> principal,
                                                               @RequestBody CreateAdvertisementRequest request) {
         return ResponseEntity

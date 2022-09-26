@@ -128,11 +128,18 @@ CREATE TABLE IF NOT EXISTS comment(
     uploaded_at             TIMESTAMP       NOT NULL    DEFAULT current_timestamp,
     rating                  SMALLINT        NOT NULL,
     primary_user_id         BIGINT          NOT NULL,
-    advertisement_id        UUID            NOT NULL,
     FOREIGN KEY (primary_user_id) REFERENCES primary_user(id)
-    ON DELETE CASCADE,
-    FOREIGN KEY (advertisement_id) REFERENCES advertisement(id)
     ON DELETE CASCADE
+    );
+
+CREATE TABLE IF NOT EXISTS advertisement_comment(
+    id  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    advertisement_id    UUID    NOT NULL,
+    comment_id          UUID    NOT NULL UNIQUE,
+    FOREIGN KEY (advertisement_id) REFERENCES advertisement(id)
+    ON DELETE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES comment(id)
+    ON DELETE SET NULL
     );
 
 CREATE OR REPLACE FUNCTION

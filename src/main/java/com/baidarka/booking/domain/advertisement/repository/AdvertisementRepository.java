@@ -84,4 +84,9 @@ public interface AdvertisementRepository extends Repository<AdvertisementProject
             rowMapperClass = AdvertisementRowMapper.class)
     AdvertisementProjection findAdvertisementBy(@Param("subCategoryId") Long subCategoryId,
                                                 @Param("advertisementId") UUID advertisementId);
+
+    @Query(value = """
+                    SELECT name FROM advertisement WHERE id = :advertisementId
+                    """)
+    String findAdvertisementNameBy(@Param("advertisementId") UUID advertisementId);
 }

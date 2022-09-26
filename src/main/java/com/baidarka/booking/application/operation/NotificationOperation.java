@@ -14,14 +14,15 @@ public class NotificationOperation {
 
     public List<NotificationResponse> get(String keycloakUserId) {
         return service.getBy(keycloakUserId).stream()
-                .map(s -> {
+                .map(notification -> {
                     final var notificationType =
-                            s.getNotificationType();
+                            notification.getNotificationType();
                     final var pushedAt =
-                            s.getPushedAt();
+                            notification.getPushedAt();
 
                     return NotificationResponse.builder()
                             .notificationType(notificationType)
+                            .attributes(notification.getAttributes())
                             .pushedAt(pushedAt)
                             .build();
                 })

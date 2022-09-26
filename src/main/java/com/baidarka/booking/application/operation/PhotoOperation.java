@@ -4,7 +4,6 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.baidarka.booking.domain.photo.service.S3Service;
 import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
-import com.baidarka.booking.infrastructure.model.PhotoType;
 import com.baidarka.booking.infrastructure.utility.S3Property;
 import com.baidarka.booking.interfaces.adapter.AdvertisementPhotoRepositoryAdapter;
 import com.baidarka.booking.interfaces.adapter.PrimaryUserPhotoRepositoryAdapter;
@@ -17,18 +16,21 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.baidarka.booking.infrastructure.config.EhCacheConfig.CACHE;
 import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_IS_NOT_VALID;
 import static com.baidarka.booking.infrastructure.model.PhotoType.ADVERTISEMENT;
 import static com.baidarka.booking.infrastructure.model.PhotoType.PRIMARY_USER;
-import static com.baidarka.booking.infrastructure.utility.ExpirationDateFactory.getAsDate;
 import static org.apache.http.entity.ContentType.IMAGE_JPEG;
 import static org.apache.http.entity.ContentType.IMAGE_PNG;
 @Component
 @RequiredArgsConstructor
 public class PhotoOperation {
+    public static final int PHOTO_EXPIRATION_HOURS = 1;
+
     private final S3Property property;
     private final S3Service service;
     private final PhotoConversationFacade facade;
@@ -101,7 +103,7 @@ public class PhotoOperation {
         final var generatePresignedUrlRequest =
                 new GeneratePresignedUrlRequest(property.getBucketName(), key, request.getMethod());
 
-        generatePresignedUrlRequest.withExpiration(getAsDate(1));
+        generatePresignedUrlRequest.withExpiration(getAsDate());
 
         return PresignedUrlToDownloadPhotoResponse.MAPPER.mapFrom(
                 service.download(generatePresignedUrlRequest, PRIMARY_USER),
@@ -119,7 +121,7 @@ public class PhotoOperation {
                     final var generatePresignedUrlRequest =
                             new GeneratePresignedUrlRequest(property.getBucketName(), key, request.getMethod());
 
-                    generatePresignedUrlRequest.withExpiration(getAsDate(1));
+                    generatePresignedUrlRequest.withExpiration(getAsDate());
 
                     return generatePresignedUrlRequest;
                 })
@@ -135,5 +137,12 @@ public class PhotoOperation {
 
         return contentType.equals(IMAGE_PNG.getMimeType()) ||
                 contentType.equals(IMAGE_JPEG.getMimeType());
+    }
+
+    private Date getAsDate() {
+        final var expiresAt =
+                LocalDateTime.now().plusHours(PHOTO_EXPIRATION_HOURS);
+
+        return Timestamp.valueOf(expiresAt);
     }
 }
