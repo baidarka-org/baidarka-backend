@@ -1,12 +1,11 @@
 package com.baidarka.booking.domain.advertisement.projection;
 
 import com.baidarka.booking.domain.signup.projection.PrimaryUserProjection;
-import com.baidarka.booking.infrastructure.config.Spring;
-import com.baidarka.booking.infrastructure.utility.BasedOwner;
 import com.baidarka.booking.interfaces.mapper.UserRepresentationToAdvertisementOwner;
 import lombok.Builder;
 import lombok.Value;
-import org.keycloak.admin.client.resource.UsersResource;
+
+import static com.baidarka.booking.infrastructure.utility.BasedOwner.getUserRepresentation;
 
 @Value
 @Builder
@@ -18,9 +17,7 @@ public class AdvertisementOwner {
 
     public static AdvertisementOwner get(PrimaryUserProjection primaryUser) {
         final var userRepresentation =
-                Spring.bean(UsersResource.class)
-                        .get(primaryUser.getKeycloakUserId().toString()) //todo
-                        .toRepresentation();
+                getUserRepresentation(primaryUser.getKeycloakUserId().toString());
 
         return UserRepresentationToAdvertisementOwner
                 .MAPPER.mapFrom(userRepresentation, primaryUser);

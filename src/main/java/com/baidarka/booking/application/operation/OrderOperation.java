@@ -55,9 +55,10 @@ public class OrderOperation {
     }
 
     public FreeSeatsByDateResponse getFreeSeats(FreeSeatsByDateRequest request) {
+        final var freeSeats = advertisementOrderService.getFreeSeatBy(request.getDate(), request.getAdvertisementId());
+
         return FreeSeatsByDateResponse.builder()
-                .seat(advertisementOrderService.getFreeSeatBy(request.getDate(), request.getAdvertisementId()))
-                .date(request.getDate())
+                .seat(freeSeats)
                 .build();
     }
 }

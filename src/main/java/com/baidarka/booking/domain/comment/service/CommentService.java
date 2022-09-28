@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface CommentService {
     void save(CommentProjection comment);
     List<CommentProjection> getBy(UUID advertisementId);
+    boolean isAlreadyCommented(UUID advertisementId, Long primaryUserId);
 }

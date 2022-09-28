@@ -43,8 +43,8 @@ public interface AdvertisementOrderRepository extends Repository<AdvertisementOr
                                                  WHERE date_trunc('day', date) = date_trunc('day', :date)),
                          is_exists AS (SELECT EXISTS (SELECT seat FROM date_occupied_seats) AS exists)
                     SELECT CASE WHEN (SELECT exists FROM is_exists)
-                        THEN (SELECT (SELECT * FROM all_advertisement_seats) - sum(seat) FROM date_occupied_seats)
-                        ELSE (SELECT seat FROM all_advertisement_seats) END;
+                        THEN (SELECT (SELECT aas.seat FROM all_advertisement_seats aas) - sum(dos.seat) FROM date_occupied_seats dos)
+                        ELSE (SELECT aas.seat FROM all_advertisement_seats aas) END;
                     """)
     Integer findFreeSeatBy(@Param("date") LocalDateTime date,
                            @Param("advertisementId") UUID advertisementId);
@@ -70,4 +70,15 @@ public interface AdvertisementOrderRepository extends Repository<AdvertisementOr
                        @Param("primaryUserId") Long primaryUserId,
                        @Param("arrival") LocalDateTime arrival,
                        @Param("departure") LocalDateTime departure);
+
+    @Query(value = """
+                    SELECT EXISTS (
+                                    SELECT advertisement_id FROM advertisement_order
+                                                            WHERE advertisement_id = :advertisementId
+                                                            AND primary_user_id = :primaryUserId
+                                                            AND order_status = 'ORDERED'
+                                                            AND arrival <= current_timestamp)
+                    """)
+    boolean isOrderedAndPassedBy(@Param("advertisementId") UUID advertisementId,
+                                 @Param("primaryUserId") Long primaryUserId);
 }

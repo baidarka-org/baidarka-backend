@@ -17,7 +17,7 @@ public interface CommentRepository extends Repository<CommentProjection, UUID> {
                                 (id, review, rating, primary_user_id)
                                     VALUES (:id, :review, :rating, :primaryUserId)
                     """)
-    void insert(@Param("id") UUID id,
+    void insertComment(@Param("id") UUID id,
                 @Param("review") String review,
                 @Param("rating") Integer rating,
                 @Param("primaryUserId") Long primaryUserId);
@@ -28,25 +28,26 @@ public interface CommentRepository extends Repository<CommentProjection, UUID> {
                                 (advertisement_id, comment_id)
                                     VALUES (:advertisementId, :commentId)
                     """)
-    void insert(@Param("advertisementId") UUID advertisementId,
+    void insertCommentIntoAdvertisement(@Param("advertisementId") UUID advertisementId,
                 @Param("commentId") UUID commentId);
 
-    default void insert(CommentProjection comment) {
-        final var commentId = UUID.randomUUID();
-
-        insert(commentId, comment.getReview(),
-                comment.getRating(),
-                comment.getPrimaryUser().getId());
-
-        insert(commentId, comment.getAdvertisementId());
-    }
+    @Query(value = """
+                    SELECT c.review, c.rating, c.uploaded_at, 
+                            pu.id, pu.keycloak_user_id
+                            FROM comment c
+                            JOIN advertisement_comment ac ON c.id = ac.comment_id
+                            JOIN primary_user pu ON c.primary_user_id = pu.id
+                            WHERE ac.advertisement_id = :advertisementId
+                    """,
+            rowMapperClass = CommentRowMapper.class)
+    List<CommentProjection> findByAdvertisementId(@Param("advertisementId") UUID advertisementId);
 
     @Query(value = """
-                    SELECT review, rating,
-                        (SELECT id, keycloak_user_id FROM primary_user WHERE id = primary_user_id)
-                            FROM comment c
-                            JOIN advertisement_comment ac ON c = ac.comment_id
-                            WHERE ac.advertisement_id = :advertisementId
+                    SELECT EXISTS (SELECT primary_user_id FROM advertisement_comment ac 
+                                                            JOIN comment c ON c.id = ac.comment_id
+                                                            WHERE ac.advertisement_id = :advertisementId
+                                                            AND c.primary_user_id = :primaryUserId)
                     """)
-    List<CommentProjection> findByAdvertisementId(@Param("advertisementId") UUID advertisementId);
+    boolean isAlreadyCommented(@Param("advertisementId") UUID advertisementId,
+                               @Param("primaryUserId") Long primaryUserId);
 }

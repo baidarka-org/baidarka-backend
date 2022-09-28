@@ -26,11 +26,11 @@ public interface AdvertisementProjectionToGetSingleAdvertisementBySubCategoryRes
     GetSingleAdvertisementBySubCategoryResponse mapFrom(GetSingleAdvertisementBySubCategoryResponse getSingleAdvertisementBySubCategory, FreeSeatsByDateResponse freeSeatsByDate);
 
     default GetSingleAdvertisementBySubCategoryResponse map(AdvertisementProjection advertisementProjection, Integer seat) {
-        final var mappedAdvertisement = mapFrom(advertisementProjection);
+        final var mappedAdvertisement =
+                mapFrom(advertisementProjection);
 
         final var freeSeatsByDate =
                 FreeSeatsByDateResponse.builder()
-                        .date(now())
                         .seat(seat)
                         .build();
 

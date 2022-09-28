@@ -32,6 +32,12 @@ public enum ErrorCode {
         public BaseRuntimeException get(String message) {
             return new UnknownException(message);
         }
+    },
+    DATA_ACCESS_FORBIDDEN {
+        @Override
+        public BaseRuntimeException get(String message) {
+            return new DataAccessForbiddenException(message);
+        }
     };
 
     public abstract BaseRuntimeException get(String message);

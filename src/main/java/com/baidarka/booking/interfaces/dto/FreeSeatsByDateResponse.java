@@ -9,5 +9,4 @@ import java.time.LocalDateTime;
 @Builder
 public class FreeSeatsByDateResponse {
     Integer seat;
-    LocalDateTime date;
 }

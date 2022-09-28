@@ -39,4 +39,9 @@ public class AdvertisementOrderServiceImpl implements AdvertisementOrderService 
     public boolean isAlreadyBookedBy(UUID advertisementId, Long primaryUserId, LocalDateTime arrival, LocalDateTime departure) {
         return repository.isBookedBy(advertisementId, primaryUserId, arrival, departure);
     }
+
+    @Override
+    public boolean isAlreadyOrderedAndPassedBy(UUID advertisementId, Long primaryUserId) {
+        return repository.isOrderedAndPassedBy(advertisementId, primaryUserId);
+    }
 }

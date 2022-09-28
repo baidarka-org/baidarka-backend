@@ -11,8 +11,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import static com.baidarka.booking.infrastructure.utility.RoleExpression.AUTHENTICATED;
 import static com.baidarka.booking.infrastructure.utility.RoleExpression.CLIENT;
+import static com.baidarka.booking.infrastructure.utility.RoleExpression.PERMIT_ALL;
 
 @RestController
 @RequestMapping("api/v1/order")
@@ -21,7 +21,7 @@ public class OrderController {
     private final OrderOperation operation;
 
     @PostMapping
-    @PreAuthorize(AUTHENTICATED) //todo
+    @PreAuthorize(CLIENT)
     public ResponseEntity<Void> order(@AuthenticationPrincipal KeycloakPrincipal<?> principal,
                                       @RequestBody OrderRequest request) {
         operation.order(request, principal.getName());
@@ -32,6 +32,7 @@ public class OrderController {
     }
 
     @PostMapping("seat")
+    @PreAuthorize(PERMIT_ALL)
     public ResponseEntity<FreeSeatsByDateResponse> getFreeSeats(@RequestBody FreeSeatsByDateRequest request) {
         return ResponseEntity
                 .ok()

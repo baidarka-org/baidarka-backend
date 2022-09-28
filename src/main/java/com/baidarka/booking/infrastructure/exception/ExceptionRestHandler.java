@@ -40,6 +40,13 @@ public class ExceptionRestHandler {
                 .body(getResponse(moe));
     }
 
+    @ExceptionHandler(DataAccessForbiddenException.class)
+    public ResponseEntity<ExceptionResponse> handle(DataAccessForbiddenException dafe) {
+        return ResponseEntity
+                .status(403)
+                .body(getResponse(dafe));
+    }
+
     private ExceptionResponse getResponse(BaseRuntimeException bre) {
         return ExceptionResponse.builder()
                 .exception(bre.getClass().getSimpleName())

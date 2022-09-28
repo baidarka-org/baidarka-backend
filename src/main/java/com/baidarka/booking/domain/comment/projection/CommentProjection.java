@@ -12,6 +12,7 @@ public class CommentProjection {
     UUID id;
     String review;
     Integer rating;
+    UUID advertisementId;
     CommentOwner commentOwner;
     LocalDateTime uploadedAt;
 

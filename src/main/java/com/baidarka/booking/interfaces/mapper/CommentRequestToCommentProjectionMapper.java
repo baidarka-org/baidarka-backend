@@ -11,6 +11,6 @@ public interface CommentRequestToCommentProjectionMapper {
     CommentRequestToCommentProjectionMapper MAPPER =
             Mappers.getMapper(CommentRequestToCommentProjectionMapper.class);
 
-    @Mapping(target = "primaryUser.id", source = "primaryUserId")
+    @Mapping(target = "commentOwner.primaryUser.id", source = "primaryUserId")
     CommentProjection mapFrom(CommentRequest request, Long primaryUserId);
 }

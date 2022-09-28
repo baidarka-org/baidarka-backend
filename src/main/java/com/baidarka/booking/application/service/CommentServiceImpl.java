@@ -26,16 +26,36 @@ public class CommentServiceImpl implements CommentService {
             rollbackFor = DataAccessException.class)
     public void save(CommentProjection comment) {
         try {
-            repository.insert(comment);
+            final var commentId = UUID.randomUUID();
+
+            repository.insertComment(
+                    commentId,
+                    comment.getReview(),
+                    comment.getRating(),
+                    comment.getCommentOwner()
+                            .getPrimaryUser()
+                            .getId());
+
+            repository.insertCommentIntoAdvertisement(
+                    comment.getAdvertisementId(),
+                    commentId);
         } catch (DataAccessException dae) {
             throw ExceptionFactory.factory()
                     .code(DATA_ACCESS_DENIED)
+                    .message(dae.getMessage())
                     .get();
         }
     }
 
     @Override
     public List<CommentProjection> getBy(UUID advertisementId) {
-        return repository.findByAdvertisementId(advertisementId); //todo return firstname and lastname of commenattotr
+        return repository.findByAdvertisementId(advertisementId).stream()
+                .map(CommentProjection::copy)
+                .toList();
+    }
+
+    @Override
+    public boolean isAlreadyCommented(UUID advertisementId, Long primaryUserId) {
+        return repository.isAlreadyCommented(advertisementId, primaryUserId);
     }
 }
