@@ -9,16 +9,16 @@ import static com.baidarka.booking.infrastructure.config.Spring.bean;
 public enum PhotoType {
     ADVERTISEMENT {
         @Override
-        public PhotoService get() {
+        public PhotoService getService() {
             return bean(AdvertisementPhotoServiceImpl.class);
         }
     },
     PRIMARY_USER {
         @Override
-        public PhotoService get() {
+        public PhotoService getService() {
             return bean(PrimaryUserPhotoServiceImpl.class);
         }
     };
 
-    public abstract PhotoService get();
+    public abstract PhotoService getService();
 }

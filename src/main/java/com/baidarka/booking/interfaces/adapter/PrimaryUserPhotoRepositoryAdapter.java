@@ -1,6 +1,6 @@
 package com.baidarka.booking.interfaces.adapter;
 
-import com.baidarka.booking.domain.photo.repository.PrimaryUserPhotoRepository;
+import com.baidarka.booking.domain.photo.primaryuser.repository.PrimaryUserPhotoRepository;
 import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;

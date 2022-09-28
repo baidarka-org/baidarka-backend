@@ -89,4 +89,13 @@ public interface AdvertisementRepository extends Repository<AdvertisementProject
                     SELECT name FROM advertisement WHERE id = :advertisementId
                     """)
     String findAdvertisementNameBy(@Param("advertisementId") UUID advertisementId);
+
+    @Query(value = """
+                    SELECT EXISTS (
+                                    SELECT id FROM advertisement
+                                                WHERE primary_user_id = :primaryUserId
+                                                AND id = :advertisementId)
+                    """)
+    boolean isOwnerBy(@Param("primaryUserId") Long primaryUserId,
+                      @Param("advertisementId") UUID advertisementId);
 }

@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.transfer.TransferManager;
 import com.baidarka.booking.domain.photo.projection.PhotoProjection;
 import com.baidarka.booking.domain.photo.service.S3Service;
 import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
+import com.baidarka.booking.infrastructure.model.ErrorCode;
 import com.baidarka.booking.infrastructure.model.PhotoType;
 import com.baidarka.booking.interfaces.interpreter.PhotoInterpreter;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class S3ServiceImpl implements S3Service {
                                     .key(request.getKey())
                                     .build();
 
-                    interpreter.doTask(photoType).save(projection, id);
+                    interpreter.doServiceTask(photoType).save(projection, id);
                 }
             }
         });
@@ -76,7 +77,7 @@ public class S3ServiceImpl implements S3Service {
                     .getAmazonS3Client()
                     .deleteObject(request);
 
-            interpreter.doTask(photoType).deleteBy(request.getKey());
+            interpreter.doServiceTask(photoType).deleteBy(request.getKey());
         } catch (AmazonServiceException ase) {
             throw ExceptionFactory.factory()
                     .code(MEDIA_OPERATION_FAILED)

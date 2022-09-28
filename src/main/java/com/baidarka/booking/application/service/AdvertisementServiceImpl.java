@@ -38,6 +38,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 advertisement.getName(),
                 advertisement
                         .getSubCategory().getName());
+
         return facade.insert(advertisement);
     }
 
@@ -68,5 +69,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public String getAdvertisementNameBy(UUID advertisementId) {
         return repository.findAdvertisementNameBy(advertisementId);
+    }
+
+    @Override
+    public boolean isOwnerBy(Long primaryUserId, UUID advertisementId) {
+        return repository.isOwnerBy(primaryUserId, advertisementId);
     }
 }

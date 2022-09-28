@@ -1,4 +1,4 @@
-package com.baidarka.booking.domain.photo.repository;
+package com.baidarka.booking.domain.photo.advertisement.repository;
 
 import com.baidarka.booking.domain.photo.projection.PhotoProjection;
 import org.springframework.data.jdbc.repository.query.Modifying;

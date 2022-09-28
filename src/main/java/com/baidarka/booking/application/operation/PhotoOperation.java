@@ -1,145 +1,33 @@
 package com.baidarka.booking.application.operation;
 
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.baidarka.booking.domain.photo.service.S3Service;
-import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
-import com.baidarka.booking.infrastructure.utility.S3Property;
-import com.baidarka.booking.interfaces.adapter.AdvertisementPhotoRepositoryAdapter;
-import com.baidarka.booking.interfaces.adapter.PrimaryUserPhotoRepositoryAdapter;
-import com.baidarka.booking.interfaces.dto.*;
-import com.baidarka.booking.interfaces.facade.PhotoConversationFacade;
-import com.baidarka.booking.interfaces.mapper.PresignedUrlToDownloadPhotoResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
+import com.baidarka.booking.interfaces.dto.DownloadPhotoRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Date;
+import java.util.Objects;
 
-import static com.baidarka.booking.infrastructure.config.EhCacheConfig.CACHE;
-import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_IS_NOT_VALID;
-import static com.baidarka.booking.infrastructure.model.PhotoType.ADVERTISEMENT;
-import static com.baidarka.booking.infrastructure.model.PhotoType.PRIMARY_USER;
 import static org.apache.http.entity.ContentType.IMAGE_JPEG;
 import static org.apache.http.entity.ContentType.IMAGE_PNG;
-@Component
-@RequiredArgsConstructor
-public class PhotoOperation {
-    public static final int PHOTO_EXPIRATION_HOURS = 1;
 
-    private final S3Property property;
-    private final S3Service service;
-    private final PhotoConversationFacade facade;
-    private final PrimaryUserPhotoRepositoryAdapter primaryUserPhotoAdapter;
-    private final AdvertisementPhotoRepositoryAdapter advertisementPhotoAdapter;
+public interface PhotoOperation<UploadType, DownloadResultType, DeleteType> {
+    int PHOTO_EXPIRATION_HOURS = 1;
+    String INVALID_CONTENT = "Content type must be png or jpeg";
 
-    public void primaryUserUpload(UploadPhotoRequest request) {
-        final var photo = request.getPhoto();
+    void upload(UploadType uploadType);
+    DownloadResultType download(DownloadPhotoRequest request);
+    void delete(DeleteType deleteType);
 
-        if (isValid(photo)) {
-            throw ExceptionFactory.factory()
-                    .code(DATA_IS_NOT_VALID)
-                    .message("Content type must be png or jpeg")
-                    .get();
-        }
-
-        final var putObjectRequest = facade.convert(photo, request.getKeycloakUserId());
-
-        service.upload(putObjectRequest, request.getKeycloakUserId(), PRIMARY_USER);
-    }
-
-    public void advertisementUpload(UploadMultiplePhotoRequest request) {
-        final var photo = request.getPhoto();
-
-        if (!isValid(photo)) {
-            throw ExceptionFactory.factory()
-                    .code(DATA_IS_NOT_VALID)
-                    .message("Content type must be png or jpeg")
-                    .get();
-        }
-
-        final var putObjectRequest =
-                facade.convert(photo,
-                        request.getKeycloakUserId(),
-                        request.getAdvertisementId());
-
-        service.upload(putObjectRequest, request.getAdvertisementId(), ADVERTISEMENT);
-    }
-
-    @CacheEvict(
-            cacheNames = CACHE,
-            key = "#keycloakUserId")
-    public void primaryUserDelete(String keycloakUserId) {
-        final var deleteObjectRequest =
-                new DeleteObjectRequest(
-                        property.getBucketName(), primaryUserPhotoAdapter.findKeyBy(keycloakUserId));
-
-        service.delete(deleteObjectRequest, PRIMARY_USER);
-    }
-
-    @CacheEvict(
-            cacheNames = CACHE,
-            key = "#request.advertisementId"
-    )
-    public void advertisementDelete(AdvertisementDeleteRequest request) {
-        final var deleteObjectRequest =
-                new DeleteObjectRequest(
-                        property.getBucketName(),
-                        advertisementPhotoAdapter.findKeyBy(request.getPhotoId()));
-
-        service.delete(deleteObjectRequest, ADVERTISEMENT);
-    }
-
-    @Cacheable(
-            cacheNames = CACHE,
-            key = "#request.id")
-    public DownloadPhotoResponse primaryUserDownload(DownloadPhotoRequest request) {
-        final var key = primaryUserPhotoAdapter.findKeyBy(request.getId());
-
-        final var generatePresignedUrlRequest =
-                new GeneratePresignedUrlRequest(property.getBucketName(), key, request.getMethod());
-
-        generatePresignedUrlRequest.withExpiration(getAsDate());
-
-        return PresignedUrlToDownloadPhotoResponse.MAPPER.mapFrom(
-                service.download(generatePresignedUrlRequest, PRIMARY_USER),
-                generatePresignedUrlRequest);
-    }
-
-    @Cacheable(
-            cacheNames = CACHE,
-            key = "#request.id")
-    public List<DownloadPhotoResponse> advertisementDownload(DownloadPhotoRequest request) {
-        final var keys = advertisementPhotoAdapter.findKeysBy(request.getId());
-
-        return keys.stream()
-                .map(key -> {
-                    final var generatePresignedUrlRequest =
-                            new GeneratePresignedUrlRequest(property.getBucketName(), key, request.getMethod());
-
-                    generatePresignedUrlRequest.withExpiration(getAsDate());
-
-                    return generatePresignedUrlRequest;
-                })
-                .map(presignedUrl ->
-                        PresignedUrlToDownloadPhotoResponse.MAPPER.mapFrom(
-                                service.download(presignedUrl, ADVERTISEMENT), presignedUrl))
-                .toList();
-    }
-
-    private boolean isValid(MultipartFile photo) {
+    default boolean isValid(MultipartFile photo) {
         final var contentType = Objects.requireNonNull(
                 photo.getContentType(), "Photo type is not found");
 
-        return contentType.equals(IMAGE_PNG.getMimeType()) ||
-                contentType.equals(IMAGE_JPEG.getMimeType());
+        return !contentType.equals(IMAGE_PNG.getMimeType()) &&
+                !contentType.equals(IMAGE_JPEG.getMimeType());
     }
 
-    private Date getAsDate() {
+    default Date getAsDate() {
         final var expiresAt =
                 LocalDateTime.now().plusHours(PHOTO_EXPIRATION_HOURS);
 

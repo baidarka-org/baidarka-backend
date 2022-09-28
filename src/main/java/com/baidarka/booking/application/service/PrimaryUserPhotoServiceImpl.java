@@ -1,7 +1,7 @@
 package com.baidarka.booking.application.service;
 
 import com.baidarka.booking.domain.photo.projection.PhotoProjection;
-import com.baidarka.booking.domain.photo.repository.PrimaryUserPhotoRepository;
+import com.baidarka.booking.domain.photo.primaryuser.repository.PrimaryUserPhotoRepository;
 import com.baidarka.booking.domain.photo.service.PhotoService;
 import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
 import lombok.RequiredArgsConstructor;
