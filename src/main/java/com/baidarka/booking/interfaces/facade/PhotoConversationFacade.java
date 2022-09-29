@@ -5,7 +5,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.baidarka.booking.infrastructure.utility.S3Property;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
