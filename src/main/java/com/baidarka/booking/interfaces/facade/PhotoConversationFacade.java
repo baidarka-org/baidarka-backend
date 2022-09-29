@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.UUID.randomUUID;
+import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.apache.commons.io.FilenameUtils.getName;
 import static org.apache.http.HttpHeaders.CONTENT_LENGTH;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
@@ -28,9 +29,11 @@ public class PhotoConversationFacade {
         metadata.put(CONTENT_TYPE, photo.getContentType());
         metadata.put(CONTENT_LENGTH, String.valueOf(photo.getSize()));
 
+        final var originalFilename = photo.getOriginalFilename();
+
         return new PutObjectRequest(
                 property.getBucketName(),
-                getKeyBy(photo.getOriginalFilename(), keycloakUserId),
+                getKeyBy(originalFilename, getExtension(originalFilename), keycloakUserId),
                 photo.getInputStream(),
                 getObjectMetadata(metadata));
     }
@@ -42,9 +45,12 @@ public class PhotoConversationFacade {
         metadata.put(CONTENT_TYPE, photo.getContentType());
         metadata.put(CONTENT_LENGTH, String.valueOf(photo.getSize()));
 
+        final var originalFilename = photo.getOriginalFilename();
+
         return new PutObjectRequest(
                 property.getBucketName(),
-                getKeyBy(photo.getOriginalFilename(), keycloakUserId, advertisementId),
+                getKeyBy(originalFilename, getExtension(originalFilename),
+                        keycloakUserId, advertisementId),
                 photo.getInputStream(),
                 getObjectMetadata(metadata));
     }
@@ -56,24 +62,27 @@ public class PhotoConversationFacade {
         return objectMetadata;
     }
 
-    private String getEncryptedPhotoNameBy(String photoName) {
-        return String.format("%d-%s", photoName.hashCode(), randomUUID());
+    private String getEncryptedPhotoNameBy(String photoName, String photoExtension) {
+        return String.format("%d-%s.%s", photoName.hashCode(), randomUUID(), photoExtension);
     }
 
-    private String getKeyBy(String photoName, String keycloakUserId, String advertisementId) {
+    private String getKeyBy(String photoName,
+                            String photoExtension,
+                            String keycloakUserId,
+                            String advertisementId) {
         final var originalPhotoName = getName(photoName);
 
         return String.format("%d/%d/%s",
                 keycloakUserId.hashCode(),
                 advertisementId.hashCode(),
-                getEncryptedPhotoNameBy(originalPhotoName));
+                getEncryptedPhotoNameBy(originalPhotoName, photoExtension));
     }
 
-    private String getKeyBy(String photoName, String keycloakUserId) {
+    private String getKeyBy(String photoName, String photoExtension, String keycloakUserId) {
         final var originalPhotoName = getName(photoName);
 
         return String.format("%d/%s",
                 keycloakUserId.hashCode(),
-                getEncryptedPhotoNameBy(originalPhotoName));
+                getEncryptedPhotoNameBy(originalPhotoName, photoExtension));
     }
 }
