@@ -1,8 +1,8 @@
 package com.baidarka.booking.domain.order.controller;
 
 import com.baidarka.booking.application.operation.OrderOperation;
-import com.baidarka.booking.interfaces.dto.FreeSeatsByDateRequest;
-import com.baidarka.booking.interfaces.dto.FreeSeatsByDateResponse;
+import com.baidarka.booking.interfaces.dto.FreeSeatsRequest;
+import com.baidarka.booking.interfaces.dto.FreeSeatsResponse;
 import com.baidarka.booking.interfaces.dto.OrderRequest;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.KeycloakPrincipal;
@@ -33,7 +33,7 @@ public class OrderController {
 
     @PostMapping("seat")
     @PreAuthorize(PERMIT_ALL)
-    public ResponseEntity<FreeSeatsByDateResponse> getFreeSeats(@RequestBody FreeSeatsByDateRequest request) {
+    public ResponseEntity<FreeSeatsResponse> getFreeSeats(@RequestBody FreeSeatsRequest request) {
         return ResponseEntity
                 .ok()
                 .body(operation.getFreeSeats(request));

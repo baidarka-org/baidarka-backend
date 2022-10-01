@@ -4,9 +4,12 @@ import lombok.Builder;
 import lombok.Value;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Value
 @Builder
-public class UploadPhotoRequest {
-    MultipartFile photo;
+public class AdvertisementPhotoRequest {
     String keycloakUserId;
+    String advertisementId;
+    List<MultipartFile> photos;
 }

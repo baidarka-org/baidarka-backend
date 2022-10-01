@@ -3,10 +3,8 @@ package com.baidarka.booking.interfaces.dto;
 import lombok.Builder;
 import lombok.Value;
 
-import java.time.LocalDateTime;
-
 @Value
 @Builder
-public class FreeSeatsByDateResponse {
-    Integer seat;
+public class AdvertisementResponse {
+    String advertisementId;
 }

@@ -1,6 +1,5 @@
 package com.baidarka.booking.interfaces.dto;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Builder;
 import lombok.Value;
 
@@ -9,13 +8,11 @@ import java.util.UUID;
 
 @Value
 @Builder
-public class GetSingleAdvertisementBySubCategoryResponse {
-    //@JsonUnwrapped
-    //GetAdvertisementBySubCategoryResponse getAdvertisementBySubCategory;
+public class AdvertisementsBySubCategoryResponse {
     UUID id;
     String name;
     String location;
-    //Integer seat;
+    Integer seat;
     BigDecimal pricePerPerson;
     String description;
     String supply;
@@ -23,5 +20,4 @@ public class GetSingleAdvertisementBySubCategoryResponse {
     boolean isOneDay;
     boolean isMultiDay;
     AdvertisementOwnerResponse advertisementOwner;
-    FreeSeatsByDateResponse freeSeatsByDate;
 }

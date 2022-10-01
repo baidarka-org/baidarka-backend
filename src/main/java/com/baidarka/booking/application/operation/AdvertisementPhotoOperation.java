@@ -9,9 +9,9 @@ import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
 import com.baidarka.booking.infrastructure.utility.S3Property;
 import com.baidarka.booking.interfaces.adapter.AdvertisementPhotoRepositoryAdapter;
 import com.baidarka.booking.interfaces.dto.AdvertisementDeleteRequest;
-import com.baidarka.booking.interfaces.dto.DownloadPhotoRequest;
-import com.baidarka.booking.interfaces.dto.DownloadPhotoResponse;
-import com.baidarka.booking.interfaces.dto.UploadMultiplePhotoRequest;
+import com.baidarka.booking.interfaces.dto.AdvertisementPhotoRequest;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadRequest;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadResponse;
 import com.baidarka.booking.interfaces.facade.PhotoConversationFacade;
 import com.baidarka.booking.interfaces.mapper.PresignedUrlToDownloadPhotoResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ import static com.baidarka.booking.infrastructure.model.PhotoType.ADVERTISEMENT;
 
 @Component
 @RequiredArgsConstructor
-public class AdvertisementPhotoOperation implements PhotoOperation<UploadMultiplePhotoRequest, List<DownloadPhotoResponse>, AdvertisementDeleteRequest> {
+public class AdvertisementPhotoOperation implements PhotoOperation<AdvertisementPhotoRequest, List<PhotoDownloadResponse>, AdvertisementDeleteRequest> {
     public final static String NOT_ADVERTISEMENT_OWNER = "You are not owned this advertisement";
 
     private final S3Property property;
@@ -41,7 +41,7 @@ public class AdvertisementPhotoOperation implements PhotoOperation<UploadMultipl
     private final AdvertisementPhotoRepositoryAdapter adapter;
 
     @Override
-    public void upload(UploadMultiplePhotoRequest request) {
+    public void upload(AdvertisementPhotoRequest request) {
         if (checkIfOwnerBy(request.getKeycloakUserId(), UUID.fromString(request.getAdvertisementId()))) {
             throw ExceptionFactory.factory()
                     .code(DATA_ACCESS_FORBIDDEN)
@@ -81,7 +81,7 @@ public class AdvertisementPhotoOperation implements PhotoOperation<UploadMultipl
     @Cacheable(
             cacheNames = CACHE,
             key = "#request.id")
-    public List<DownloadPhotoResponse> download(DownloadPhotoRequest request) {
+    public List<PhotoDownloadResponse> download(PhotoDownloadRequest request) {
         final var keys = adapter.findKeysBy(request.getId());
 
         return keys.stream()

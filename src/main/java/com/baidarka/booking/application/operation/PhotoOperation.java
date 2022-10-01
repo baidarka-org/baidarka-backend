@@ -1,6 +1,6 @@
 package com.baidarka.booking.application.operation;
 
-import com.baidarka.booking.interfaces.dto.DownloadPhotoRequest;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
@@ -16,7 +16,7 @@ public interface PhotoOperation<UploadType, DownloadResultType, DeleteType> {
     String INVALID_CONTENT = "Content type must be png or jpeg";
 
     void upload(UploadType uploadType);
-    DownloadResultType download(DownloadPhotoRequest request);
+    DownloadResultType download(PhotoDownloadRequest request);
     void delete(DeleteType deleteType);
 
     default boolean isValid(MultipartFile photo) {

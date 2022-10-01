@@ -5,15 +5,12 @@ import com.baidarka.booking.domain.order.service.AdvertisementOrderService;
 import com.baidarka.booking.domain.signup.service.PrimaryUserService;
 import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
 import com.baidarka.booking.infrastructure.model.ErrorCode;
-import com.baidarka.booking.interfaces.dto.FreeSeatsByDateRequest;
-import com.baidarka.booking.interfaces.dto.FreeSeatsByDateResponse;
+import com.baidarka.booking.interfaces.dto.FreeSeatsRequest;
+import com.baidarka.booking.interfaces.dto.FreeSeatsResponse;
 import com.baidarka.booking.interfaces.dto.OrderRequest;
 import com.baidarka.booking.interfaces.mapper.OrderRequestToAdvertisementOrderProjectionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_IS_NOT_VALID;
 
@@ -54,10 +51,10 @@ public class OrderOperation {
         advertisementOrderService.save(advertisementOrder);
     }
 
-    public FreeSeatsByDateResponse getFreeSeats(FreeSeatsByDateRequest request) {
+    public FreeSeatsResponse getFreeSeats(FreeSeatsRequest request) {
         final var freeSeats = advertisementOrderService.getFreeSeatBy(request.getDate(), request.getAdvertisementId());
 
-        return FreeSeatsByDateResponse.builder()
+        return FreeSeatsResponse.builder()
                 .seat(freeSeats)
                 .build();
     }

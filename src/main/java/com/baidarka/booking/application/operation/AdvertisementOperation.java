@@ -5,10 +5,10 @@ import com.baidarka.booking.domain.advertisement.service.AdvertisementService;
 import com.baidarka.booking.domain.order.service.AdvertisementOrderService;
 import com.baidarka.booking.domain.signup.projection.PrimaryUserProjection;
 import com.baidarka.booking.domain.signup.service.PrimaryUserService;
-import com.baidarka.booking.interfaces.dto.CreateAdvertisementRequest;
-import com.baidarka.booking.interfaces.dto.CreateAdvertisementResponse;
-import com.baidarka.booking.interfaces.dto.GetAdvertisementBySubCategoryResponse;
-import com.baidarka.booking.interfaces.dto.GetSingleAdvertisementBySubCategoryResponse;
+import com.baidarka.booking.interfaces.dto.AdvertisementBySubCategoryResponse;
+import com.baidarka.booking.interfaces.dto.AdvertisementRequest;
+import com.baidarka.booking.interfaces.dto.AdvertisementResponse;
+import com.baidarka.booking.interfaces.dto.AdvertisementsBySubCategoryResponse;
 import com.baidarka.booking.interfaces.mapper.AdvertisementProjectionToGetSingleAdvertisementBySubCategoryResponseMapper;
 import com.baidarka.booking.interfaces.mapper.CreateAdvertisementRequestToAdvertisementProjectionMapper;
 import com.baidarka.booking.interfaces.mapper.GetAdvertisementBySubCategoryResponseToAdvertisementProjectionMapper;
@@ -28,7 +28,7 @@ public class AdvertisementOperation {
     private final PrimaryUserService primaryUserService;
     private final AdvertisementOrderService advertisementOrderService;
 
-    public CreateAdvertisementResponse create(CreateAdvertisementRequest request, String keycloakUserId) {
+    public AdvertisementResponse create(AdvertisementRequest request, String keycloakUserId) {
         final var primaryUser =
                 PrimaryUserProjection.builder()
                         .id(primaryUserService.getPrimaryUserIdBy(keycloakUserId))
@@ -38,12 +38,12 @@ public class AdvertisementOperation {
         final var advertisement =
                 CreateAdvertisementRequestToAdvertisementProjectionMapper.MAPPER.mapFrom(request, AdvertisementOwner.get(primaryUser));
 
-        return CreateAdvertisementResponse.builder()
+        return AdvertisementResponse.builder()
                 .advertisementId(advertisementService.save(advertisement).toString())
                 .build();
     }
 
-    public List<GetAdvertisementBySubCategoryResponse> getBy(Long subCategoryId) {
+    public List<AdvertisementsBySubCategoryResponse> getBy(Long subCategoryId) {
         final var advertisements = advertisementService.getAdvertisementsBy(subCategoryId);
 
         return advertisements.stream()
@@ -51,7 +51,7 @@ public class AdvertisementOperation {
                 .toList();
     }
 
-    public GetSingleAdvertisementBySubCategoryResponse getBy(Long subCategoryId, UUID advertisementId) {
+    public AdvertisementBySubCategoryResponse getBy(Long subCategoryId, UUID advertisementId) {
         final var advertisement =
                 advertisementService.getAdvertisementBy(subCategoryId, advertisementId);
 

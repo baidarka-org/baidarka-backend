@@ -6,7 +6,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class DownloadPhotoRequest {
+public class PhotoDownloadRequest {
     String id;
     HttpMethod method;
 }

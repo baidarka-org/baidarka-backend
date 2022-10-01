@@ -2,9 +2,9 @@ package com.baidarka.booking.domain.photo.primaryuser.controller;
 
 import com.amazonaws.HttpMethod;
 import com.baidarka.booking.application.operation.PhotoOperation;
-import com.baidarka.booking.interfaces.dto.DownloadPhotoRequest;
-import com.baidarka.booking.interfaces.dto.DownloadPhotoResponse;
-import com.baidarka.booking.interfaces.dto.UploadPhotoRequest;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadRequest;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadResponse;
+import com.baidarka.booking.interfaces.dto.PhotoRequest;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.KeycloakPrincipal;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +21,14 @@ import static com.baidarka.booking.infrastructure.utility.RoleExpression.AUTHENT
 @RequestMapping("api/v1/photo")
 @RequiredArgsConstructor
 public class PrimaryUserPhotoController {
-    private final PhotoOperation<UploadPhotoRequest, DownloadPhotoResponse, String> operation;
+    private final PhotoOperation<PhotoRequest, PhotoDownloadResponse, String> operation;
 
     @PutMapping
     @PreAuthorize(AUTHENTICATED)
     public ResponseEntity<Void> upload(@AuthenticationPrincipal KeycloakPrincipal<?> principal,
                                        @RequestParam MultipartFile photo) {
         final var request =
-                UploadPhotoRequest.builder()
+                PhotoRequest.builder()
                         .keycloakUserId(principal.getName())
                         .photo(photo)
                         .build();
@@ -42,10 +42,10 @@ public class PrimaryUserPhotoController {
 
     @GetMapping
     @PreAuthorize(AUTHENTICATED)
-    public ResponseEntity<DownloadPhotoResponse> download(@AuthenticationPrincipal KeycloakPrincipal<?> principal,
+    public ResponseEntity<PhotoDownloadResponse> download(@AuthenticationPrincipal KeycloakPrincipal<?> principal,
                                                           HttpServletRequest servlet) {
         final var request =
-                DownloadPhotoRequest.builder()
+                PhotoDownloadRequest.builder()
                         .id(principal.getName())
                         .method(HttpMethod.valueOf(servlet.getMethod()))
                         .build();

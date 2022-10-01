@@ -6,9 +6,9 @@ import com.baidarka.booking.domain.photo.service.S3Service;
 import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
 import com.baidarka.booking.infrastructure.utility.S3Property;
 import com.baidarka.booking.interfaces.adapter.PrimaryUserPhotoRepositoryAdapter;
-import com.baidarka.booking.interfaces.dto.DownloadPhotoRequest;
-import com.baidarka.booking.interfaces.dto.DownloadPhotoResponse;
-import com.baidarka.booking.interfaces.dto.UploadPhotoRequest;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadRequest;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadResponse;
+import com.baidarka.booking.interfaces.dto.PhotoRequest;
 import com.baidarka.booking.interfaces.facade.PhotoConversationFacade;
 import com.baidarka.booking.interfaces.mapper.PresignedUrlToDownloadPhotoResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +22,14 @@ import static com.baidarka.booking.infrastructure.model.PhotoType.PRIMARY_USER;
 
 @Component
 @RequiredArgsConstructor
-public class PrimaryUserPhotoOperation implements PhotoOperation<UploadPhotoRequest, DownloadPhotoResponse, String>{
+public class PrimaryUserPhotoOperation implements PhotoOperation<PhotoRequest, PhotoDownloadResponse, String>{
     private final S3Property property;
     private final S3Service service;
     private final PhotoConversationFacade facade;
     private final PrimaryUserPhotoRepositoryAdapter adapter;
 
     @Override
-    public void upload(UploadPhotoRequest request) {
+    public void upload(PhotoRequest request) {
         final var photo = request.getPhoto();
 
         if (isValid(photo)) {
@@ -48,7 +48,7 @@ public class PrimaryUserPhotoOperation implements PhotoOperation<UploadPhotoRequ
     @Cacheable(
             cacheNames = CACHE,
             key = "#request.id")
-    public DownloadPhotoResponse download(DownloadPhotoRequest request) {
+    public PhotoDownloadResponse download(PhotoDownloadRequest request) {
         final var key = adapter.findKeyBy(request.getId());
 
         final var generatePresignedUrlRequest =

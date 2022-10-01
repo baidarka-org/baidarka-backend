@@ -3,9 +3,10 @@ package com.baidarka.booking.domain.photo.advertisement.controller;
 import com.amazonaws.HttpMethod;
 import com.baidarka.booking.application.operation.PhotoOperation;
 import com.baidarka.booking.interfaces.dto.AdvertisementDeleteRequest;
-import com.baidarka.booking.interfaces.dto.DownloadPhotoRequest;
-import com.baidarka.booking.interfaces.dto.DownloadPhotoResponse;
-import com.baidarka.booking.interfaces.dto.UploadMultiplePhotoRequest;
+import com.baidarka.booking.interfaces.dto.AdvertisementPhotoRequest;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadRequest;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadResponse;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadResponse;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.KeycloakPrincipal;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ import static com.baidarka.booking.infrastructure.utility.RoleExpression.AUTHENT
 @RequestMapping("api/v1/photo/{advertisementId}")
 @RequiredArgsConstructor
 public class AdvertisementPhotoController {
-    private final PhotoOperation<UploadMultiplePhotoRequest, List<DownloadPhotoResponse>, AdvertisementDeleteRequest> operation;
+    private final PhotoOperation<AdvertisementPhotoRequest, List<PhotoDownloadResponse>, AdvertisementDeleteRequest> operation;
 
     @PutMapping
     @PreAuthorize(AUTHENTICATED)
@@ -32,7 +33,7 @@ public class AdvertisementPhotoController {
                                        @PathVariable String advertisementId,
                                        @RequestParam List<MultipartFile> photos) {
         final var request =
-                UploadMultiplePhotoRequest.builder()
+                AdvertisementPhotoRequest.builder()
                         .keycloakUserId(principal.getName())
                         .advertisementId(advertisementId)
                         .photos(photos)
@@ -47,10 +48,10 @@ public class AdvertisementPhotoController {
 
     @GetMapping
     @PreAuthorize(AUTHENTICATED)
-    public ResponseEntity<List<DownloadPhotoResponse>> download(@PathVariable String advertisementId,
+    public ResponseEntity<List<PhotoDownloadResponse>> download(@PathVariable String advertisementId,
                                                                 HttpServletRequest servlet) {
         final var request =
-                DownloadPhotoRequest.builder()
+                PhotoDownloadRequest.builder()
                         .id(advertisementId)
                         .method(HttpMethod.valueOf(servlet.getMethod()))
                         .build();

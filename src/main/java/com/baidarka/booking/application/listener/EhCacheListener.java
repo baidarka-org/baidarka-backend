@@ -1,6 +1,6 @@
 package com.baidarka.booking.application.listener;
 
-import com.baidarka.booking.interfaces.dto.DownloadPhotoResponse;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.ehcache.event.CacheEvent;
 import org.ehcache.event.CacheEventListener;
@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class EhCacheListener implements CacheEventListener<String, DownloadPhotoResponse> {
+public class EhCacheListener implements CacheEventListener<String, PhotoDownloadResponse> {
     @Override
-    public void onEvent(CacheEvent<? extends String, ? extends DownloadPhotoResponse> cacheEvent) {
+    public void onEvent(CacheEvent<? extends String, ? extends PhotoDownloadResponse> cacheEvent) {
         final var presignedUrl = cacheEvent.getNewValue().getPresignedUrl();
 
         switch (cacheEvent.getType()) {

@@ -1,13 +1,11 @@
 package com.baidarka.booking.interfaces.mapper;
 
 import com.baidarka.booking.domain.advertisement.projection.AdvertisementProjection;
-import com.baidarka.booking.interfaces.dto.FreeSeatsByDateResponse;
-import com.baidarka.booking.interfaces.dto.GetSingleAdvertisementBySubCategoryResponse;
+import com.baidarka.booking.interfaces.dto.AdvertisementBySubCategoryResponse;
+import com.baidarka.booking.interfaces.dto.FreeSeatsResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-
-import static java.time.LocalDateTime.now;
 
 @Mapper
 public interface AdvertisementProjectionToGetSingleAdvertisementBySubCategoryResponseMapper {
@@ -20,20 +18,20 @@ public interface AdvertisementProjectionToGetSingleAdvertisementBySubCategoryRes
     @Mapping(
             target = "advertisementOwner.primaryUser.id",
             expression = "java(primaryUserProjection.getId())")
-    GetSingleAdvertisementBySubCategoryResponse mapFrom(AdvertisementProjection advertisementProjection);
+    AdvertisementBySubCategoryResponse mapFrom(AdvertisementProjection advertisementProjection);
 
-    @Mapping(target = "freeSeatsByDate", source = "freeSeatsByDate")
-    GetSingleAdvertisementBySubCategoryResponse mapFrom(GetSingleAdvertisementBySubCategoryResponse getSingleAdvertisementBySubCategory, FreeSeatsByDateResponse freeSeatsByDate);
+    @Mapping(target = "freeSeats", source = "freeSeats")
+    AdvertisementBySubCategoryResponse mapFrom(AdvertisementBySubCategoryResponse getSingleAdvertisementBySubCategory, FreeSeatsResponse freeSeats);
 
-    default GetSingleAdvertisementBySubCategoryResponse map(AdvertisementProjection advertisementProjection, Integer seat) {
+    default AdvertisementBySubCategoryResponse map(AdvertisementProjection advertisementProjection, Integer seat) {
         final var mappedAdvertisement =
                 mapFrom(advertisementProjection);
 
-        final var freeSeatsByDate =
-                FreeSeatsByDateResponse.builder()
+        final var freeSeats =
+                FreeSeatsResponse.builder()
                         .seat(seat)
                         .build();
 
-        return mapFrom(mappedAdvertisement, freeSeatsByDate);
+        return mapFrom(mappedAdvertisement, freeSeats);
     }
 }

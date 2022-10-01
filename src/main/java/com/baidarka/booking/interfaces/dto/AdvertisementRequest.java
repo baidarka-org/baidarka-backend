@@ -1,15 +1,11 @@
 package com.baidarka.booking.interfaces.dto;
 
-import lombok.Builder;
 import lombok.Value;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Value
-@Builder
-public class GetAdvertisementBySubCategoryResponse {
-    UUID id;
+public class AdvertisementRequest {
     String name;
     String location;
     Integer seat;
@@ -19,5 +15,5 @@ public class GetAdvertisementBySubCategoryResponse {
     boolean withDelivery;
     boolean isOneDay;
     boolean isMultiDay;
-    AdvertisementOwnerResponse advertisementOwner;
+    SubCategoryRequest subCategory;
 }

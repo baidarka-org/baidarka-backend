@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Value
-public class FreeSeatsByDateRequest {
+public class FreeSeatsRequest {
     UUID advertisementId;
     LocalDateTime date;
 }

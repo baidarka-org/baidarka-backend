@@ -1,7 +1,7 @@
 package com.baidarka.booking.interfaces.mapper;
 
 import com.baidarka.booking.domain.advertisement.projection.AdvertisementProjection;
-import com.baidarka.booking.interfaces.dto.GetAdvertisementBySubCategoryResponse;
+import com.baidarka.booking.interfaces.dto.AdvertisementsBySubCategoryResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -10,5 +10,5 @@ public interface GetAdvertisementBySubCategoryResponseToAdvertisementProjectionM
     GetAdvertisementBySubCategoryResponseToAdvertisementProjectionMapper MAPPER =
             Mappers.getMapper(GetAdvertisementBySubCategoryResponseToAdvertisementProjectionMapper.class);
 
-    GetAdvertisementBySubCategoryResponse mapFrom(AdvertisementProjection advertisement);
+    AdvertisementsBySubCategoryResponse mapFrom(AdvertisementProjection advertisement);
 }

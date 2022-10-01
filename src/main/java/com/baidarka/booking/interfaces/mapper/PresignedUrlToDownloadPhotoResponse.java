@@ -1,7 +1,7 @@
 package com.baidarka.booking.interfaces.mapper;
 
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.baidarka.booking.interfaces.dto.DownloadPhotoResponse;
+import com.baidarka.booking.interfaces.dto.PhotoDownloadResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -19,5 +19,5 @@ public interface PresignedUrlToDownloadPhotoResponse {
                                                                 .getExpiration()
                                                                 .toInstant())
                                                 """)
-    DownloadPhotoResponse mapFrom(URL presignedUrl, GeneratePresignedUrlRequest request);
+    PhotoDownloadResponse mapFrom(URL presignedUrl, GeneratePresignedUrlRequest request);
 }

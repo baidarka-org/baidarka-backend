@@ -1,10 +1,10 @@
 package com.baidarka.booking.domain.advertisement.controller;
 
 import com.baidarka.booking.application.operation.AdvertisementOperation;
-import com.baidarka.booking.interfaces.dto.CreateAdvertisementRequest;
-import com.baidarka.booking.interfaces.dto.CreateAdvertisementResponse;
-import com.baidarka.booking.interfaces.dto.GetAdvertisementBySubCategoryResponse;
-import com.baidarka.booking.interfaces.dto.GetSingleAdvertisementBySubCategoryResponse;
+import com.baidarka.booking.interfaces.dto.AdvertisementBySubCategoryResponse;
+import com.baidarka.booking.interfaces.dto.AdvertisementRequest;
+import com.baidarka.booking.interfaces.dto.AdvertisementResponse;
+import com.baidarka.booking.interfaces.dto.AdvertisementsBySubCategoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.KeycloakPrincipal;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +26,8 @@ public class AdvertisementController {
 
     @PostMapping
     @PreAuthorize(REPRESENTATIVE)
-    public ResponseEntity<CreateAdvertisementResponse> create(@AuthenticationPrincipal KeycloakPrincipal<?> principal,
-                                                              @RequestBody CreateAdvertisementRequest request) {
+    public ResponseEntity<AdvertisementResponse> create(@AuthenticationPrincipal KeycloakPrincipal<?> principal,
+                                                        @RequestBody AdvertisementRequest request) {
         return ResponseEntity
                 .ok()
                 .body(operation.create(request, principal.getName()));
@@ -35,7 +35,7 @@ public class AdvertisementController {
 
     @GetMapping("{subCategoryId}")
     @PreAuthorize(AUTHENTICATED)
-    public ResponseEntity<List<GetAdvertisementBySubCategoryResponse>> getBy(@PathVariable Long subCategoryId) {
+    public ResponseEntity<List<AdvertisementsBySubCategoryResponse>> getBy(@PathVariable Long subCategoryId) {
         return ResponseEntity
                 .ok()
                 .body(operation.getBy(subCategoryId));
@@ -43,8 +43,8 @@ public class AdvertisementController {
 
     @GetMapping("{subCategoryId}/{advertisementId}")
     @PreAuthorize(AUTHENTICATED)
-    public ResponseEntity<GetSingleAdvertisementBySubCategoryResponse> getBy(@PathVariable Long subCategoryId,
-                                                                             @PathVariable UUID advertisementId) {
+    public ResponseEntity<AdvertisementBySubCategoryResponse> getBy(@PathVariable Long subCategoryId,
+                                                                    @PathVariable UUID advertisementId) {
         return ResponseEntity
                 .ok()
                 .body(operation.getBy(subCategoryId, advertisementId));
