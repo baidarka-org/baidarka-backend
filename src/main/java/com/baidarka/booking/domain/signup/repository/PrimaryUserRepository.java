@@ -16,7 +16,7 @@ public interface PrimaryUserRepository extends Repository<PrimaryUserProjection,
                                 FROM primary_user
                                 WHERE keycloak_user_id = :keycloakUserId)
                     """)
-    boolean isExists(@Param("keycloakUserId") String keycloakUserId);
+    boolean isExistsBy(@Param("keycloakUserId") String keycloakUserId);
 
     @Modifying
     @Query(value = """

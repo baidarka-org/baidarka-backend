@@ -6,8 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PhotoInterpreter {
-
-    public PhotoService doTask(PhotoType photoType) {
-        return photoType.get();
+    public PhotoService doServiceTask(PhotoType photoType) {
+        return photoType.getService();
     }
 }

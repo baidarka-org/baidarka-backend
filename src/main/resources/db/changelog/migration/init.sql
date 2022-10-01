@@ -22,20 +22,21 @@ CREATE TABLE IF NOT EXISTS primary_user_photo(
     key         VARCHAR(255)    NOT NULL,
     is_default  BOOLEAN NOT NULL DEFAULT FALSE,
     uploaded_at TIMESTAMP   NOT NULL DEFAULT current_timestamp
-    );
+);
 
 CREATE UNIQUE INDEX key_undx ON primary_user_photo(key);
 
 INSERT INTO primary_user_photo (key, is_default) VALUES ('6178abb3-7f12-9960-36b3-d49d025ebfa7.png', true);
 
 CREATE TABLE IF NOT EXISTS primary_user(
-                                           id                      BIGINT  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                           keycloak_user_id          VARCHAR(255)          NOT NULL,
-    primary_user_photo_id   UUID                    NOT NULL DEFAULT get_default_photo_uuid(),
+    id                          BIGINT  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    keycloak_user_id            VARCHAR(255)            NOT NULL,
+    primary_user_photo_id       UUID                    NOT NULL    DEFAULT get_default_photo_uuid(),
+    signed_at                   TIMESTAMP               NOT NULL    DEFAULT current_timestamp,
     FOREIGN KEY(primary_user_photo_id) REFERENCES primary_user_photo(id)
-    ON UPDATE CASCADE
-    ON DELETE SET DEFAULT
-    );
+                                                    ON UPDATE CASCADE
+                                                    ON DELETE SET DEFAULT
+);
 
 CREATE UNIQUE INDEX keycloak_user_id_undx ON primary_user(keycloak_user_id);
 
@@ -44,25 +45,24 @@ CREATE TABLE IF NOT EXISTS photo(
     keys        VARCHAR(255)    NOT NULL,
     is_default  BOOLEAN         NOT NULL    DEFAULT FALSE,
     uploaded_at TIMESTAMP       NOT NULL    DEFAULT current_timestamp
-    );
+);
 
 CREATE TABLE IF NOT EXISTS primary_category(
-                                               id          BIGINT  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                               name        VARCHAR(255)    NOT NULL UNIQUE
-    );
+    id          BIGINT  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name        VARCHAR(255)    NOT NULL UNIQUE
+);
 
 CREATE TABLE IF NOT EXISTS sub_category(
-                                           id          BIGINT  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                           name        VARCHAR(255)    NOT NULL UNIQUE,
-    attributes  JSONB   NOT NULL,
-    primary_category_id     BIGINT  NOT NULL,
+    id                      BIGINT  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name                    VARCHAR(255)    NOT NULL    UNIQUE,
+    primary_category_id     BIGINT          NOT NULL,
     FOREIGN KEY (primary_category_id) REFERENCES primary_category(id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-    );
+                                                ON DELETE CASCADE
+                                                ON UPDATE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS advertisement(
-    id                  UUID PRIMARY KEY    DEFAULT gen_random_uuid(),
+    id                  UUID PRIMARY KEY                    DEFAULT gen_random_uuid(),
     name                VARCHAR(255)        NOT NULL    UNIQUE,
     location            VARCHAR(255)        NOT NULL,
     seat                SMALLINT            NOT NULL,
@@ -76,64 +76,71 @@ CREATE TABLE IF NOT EXISTS advertisement(
     sub_category_id     BIGINT              NOT NULL,
     primary_user_id     BIGINT              NOT NULL,
     FOREIGN KEY (sub_category_id) REFERENCES sub_category(id)
-    ON DELETE CASCADE,
+                                                ON DELETE CASCADE,
     FOREIGN KEY (primary_user_id) REFERENCES primary_user(id)
-    ON DELETE CASCADE
-    );
+                                                ON DELETE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS advertisement_photo(
-                                                  id      BIGINT  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                                  advertisement_id    UUID    NOT NULL,
-                                                  photo_id            UUID    NOT NULL,
-                                                  FOREIGN KEY (advertisement_id) REFERENCES advertisement(id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    id                  BIGINT  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    advertisement_id    UUID    NOT NULL,
+    photo_id            UUID    NOT NULL,
+    FOREIGN KEY (advertisement_id) REFERENCES advertisement(id)
+                                            ON DELETE CASCADE
+                                            ON UPDATE CASCADE,
     FOREIGN KEY (photo_id) REFERENCES photo(id)
-    ON DELETE CASCADE
-    );
+                                            ON DELETE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS favorites(
-                                        id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                        advertisement_id   UUID NOT NULL,
-                                        FOREIGN KEY (advertisement_id) REFERENCES advertisement(id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-    );
+    id                  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    advertisement_id    UUID    NOT NULL,
+    FOREIGN KEY (advertisement_id) REFERENCES advertisement(id)
+                                            ON DELETE CASCADE
+                                            ON UPDATE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS advertisement_order(
-                                                  id                          BIGINT  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                                  expires_at                  TIMESTAMP           NOT NULL    DEFAULT (current_timestamp + INTERVAL '1 day'),
+    id                          BIGINT  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    expires_at                  TIMESTAMP           NOT NULL    DEFAULT (current_timestamp + INTERVAL '1 day'),
     order_status                VARCHAR(50)         NOT NULL,
     seat                        SMALLINT            NOT NULL,
     arrival                     TIMESTAMP           NOT NULL,
     departure                   TIMESTAMP           NOT NULL,
     advertisement_id            UUID                NOT NULL    UNIQUE,
     FOREIGN KEY (advertisement_id) REFERENCES advertisement(id)
-    ON DELETE CASCADE
-    );
+                                                ON DELETE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS notification(
-    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id                  UUID PRIMARY KEY    DEFAULT gen_random_uuid(),
     notification_type   VARCHAR(100)    NOT NULL,
     attributes          JSONB,
     primary_user_id     BIGINT          NOT NULL,
-    pushed_at           TIMESTAMP   DEFAULT current_timestamp,
+    pushed_at           TIMESTAMP           DEFAULT current_timestamp,
     FOREIGN KEY (primary_user_id) REFERENCES primary_user(id)
-    ON DELETE CASCADE
-    ); --todo make cron job with deletion of notifications
+                                                ON DELETE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS comment(
-    id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id                      UUID PRIMARY KEY            DEFAULT gen_random_uuid(),
     review                  VARCHAR(500)    NOT NULL,
     uploaded_at             TIMESTAMP       NOT NULL    DEFAULT current_timestamp,
     rating                  SMALLINT        NOT NULL,
     primary_user_id         BIGINT          NOT NULL,
-    advertisement_id        UUID            NOT NULL,
     FOREIGN KEY (primary_user_id) REFERENCES primary_user(id)
-    ON DELETE CASCADE,
+                                                ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS advertisement_comment(
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    advertisement_id    UUID    NOT NULL,
+    comment_id          UUID    NOT NULL    UNIQUE,
     FOREIGN KEY (advertisement_id) REFERENCES advertisement(id)
-    ON DELETE CASCADE
-    );
+                                        ON DELETE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES comment(id)
+                                        ON DELETE SET NULL
+);
 
 CREATE OR REPLACE FUNCTION
     check_advertisement_photo_amount()

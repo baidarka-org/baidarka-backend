@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface NotificationService {
     void save(NotificationProjection notification);
-    List<NotificationProjection> getBy(String keycloakUserId);
+    List<NotificationProjection> getNotificationsBy(String keycloakUserId);
 }

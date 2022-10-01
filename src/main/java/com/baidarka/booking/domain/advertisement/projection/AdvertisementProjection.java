@@ -1,10 +1,12 @@
 package com.baidarka.booking.domain.advertisement.projection;
 
 import com.baidarka.booking.domain.category.projection.SubCategoryProjection;
+import com.baidarka.booking.domain.comment.projection.CommentProjection;
 import lombok.Builder;
 import lombok.Value;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Value
@@ -22,6 +24,7 @@ public class AdvertisementProjection {
     boolean isMultiDay;
     SubCategoryProjection subCategory;
     AdvertisementOwner advertisementOwner;
+    List<CommentProjection> comments;
 
     public AdvertisementProjection copy() {
         return AdvertisementProjection.builder()

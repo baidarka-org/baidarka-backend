@@ -5,10 +5,12 @@ import lombok.Builder;
 import lombok.Value;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Value
 @Builder
 public class NotificationResponse {
     NotificationType notificationType;
+    Map<Integer, String> attributes;
     LocalDateTime pushedAt;
 }

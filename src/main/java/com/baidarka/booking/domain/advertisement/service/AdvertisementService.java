@@ -12,4 +12,6 @@ public interface AdvertisementService {
                                                UUID advertisementId);
 
     boolean isExistsBy(UUID advertisementId);
+    String getAdvertisementNameBy(UUID advertisementId);
+    boolean isOwnerBy(Long primaryUserId, UUID advertisementId);
 }

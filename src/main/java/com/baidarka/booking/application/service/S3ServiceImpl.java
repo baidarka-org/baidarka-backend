@@ -7,17 +7,16 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.baidarka.booking.domain.photo.projection.PhotoProjection;
 import com.baidarka.booking.domain.photo.service.S3Service;
-import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
 import com.baidarka.booking.infrastructure.model.PhotoType;
 import com.baidarka.booking.interfaces.interpreter.PhotoInterpreter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
 
+import static com.baidarka.booking.infrastructure.exception.ExceptionFactory.factory;
 import static com.baidarka.booking.infrastructure.model.ErrorCode.MEDIA_OPERATION_FAILED;
 import static java.util.UUID.randomUUID;
 
@@ -34,7 +33,7 @@ public class S3ServiceImpl implements S3Service {
         request.withGeneralProgressListener(progressEvent -> {
             switch (progressEvent.getEventType()) {
                 case CLIENT_REQUEST_FAILED_EVENT ->
-                        throw ExceptionFactory.factory()
+                        throw factory()
                                 .code(MEDIA_OPERATION_FAILED)
                                 .message("Media file uploading process failed")
                                 .get();
@@ -45,7 +44,7 @@ public class S3ServiceImpl implements S3Service {
                                     .key(request.getKey())
                                     .build();
 
-                    interpreter.doTask(photoType).save(projection, id);
+                    interpreter.doServiceTask(photoType).save(projection, id);
                 }
             }
         });
@@ -62,7 +61,7 @@ public class S3ServiceImpl implements S3Service {
                     .getAmazonS3Client()
                     .generatePresignedUrl(request);
         } catch (AmazonServiceException ase) {
-            throw ExceptionFactory.factory()
+            throw factory()
                     .code(MEDIA_OPERATION_FAILED)
                     .message("Media file URL generating process failed")
                     .get();
@@ -76,9 +75,9 @@ public class S3ServiceImpl implements S3Service {
                     .getAmazonS3Client()
                     .deleteObject(request);
 
-            interpreter.doTask(photoType).deleteBy(request.getKey());
+            interpreter.doServiceTask(photoType).deletePhotoBy(request.getKey());
         } catch (AmazonServiceException ase) {
-            throw ExceptionFactory.factory()
+            throw factory()
                     .code(MEDIA_OPERATION_FAILED)
                     .message("Media file deleting process failed")
                     .get();

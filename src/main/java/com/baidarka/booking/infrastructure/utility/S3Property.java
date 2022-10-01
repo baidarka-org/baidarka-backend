@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Getter
 @Setter
-@Primary //todo ???????
+@Primary
 @Configuration
 @PropertySource(
         value = "classpath:application-dev.yaml",

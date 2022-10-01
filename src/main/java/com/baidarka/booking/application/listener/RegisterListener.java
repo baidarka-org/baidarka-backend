@@ -19,7 +19,7 @@ public class RegisterListener {
             topics = REGISTER_TOPIC,
             groupId = REGISTER_GROUP)
     public void on(String keycloakUserId) {
-        service.insert(keycloakUserId);
+        service.save(keycloakUserId);
 
         log.info("Received event on {}", REGISTER_GROUP);
     }

@@ -7,6 +7,8 @@ import org.springframework.core.io.support.EncodedResource;
 
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 public class PropertySourceFactory implements org.springframework.core.io.support.PropertySourceFactory {
 
     @Override
@@ -18,8 +20,8 @@ public class PropertySourceFactory implements org.springframework.core.io.suppor
         factory.setResources(factoryResource);
 
         return new PropertiesPropertySource(
-                Objects.requireNonNull(factoryResource.getFilename()),
-                Objects.requireNonNull(factory.getObject()));
+                requireNonNull(factoryResource.getFilename()),
+                requireNonNull(factory.getObject()));
     }
 }
 

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
 
+import static java.time.Instant.now;
+
 @RestControllerAdvice
 public class ExceptionRestHandler {
 
@@ -40,6 +42,13 @@ public class ExceptionRestHandler {
                 .body(getResponse(moe));
     }
 
+    @ExceptionHandler(DataAccessForbiddenException.class)
+    public ResponseEntity<ExceptionResponse> handle(DataAccessForbiddenException dafe) {
+        return ResponseEntity
+                .status(403)
+                .body(getResponse(dafe));
+    }
+
     private ExceptionResponse getResponse(BaseRuntimeException bre) {
         return ExceptionResponse.builder()
                 .exception(bre.getClass().getSimpleName())
@@ -54,6 +63,6 @@ public class ExceptionRestHandler {
         String exception;
         String message;
         ErrorType type;
-        Instant timestamp = Instant.now();
+        Instant timestamp = now();
     }
 }

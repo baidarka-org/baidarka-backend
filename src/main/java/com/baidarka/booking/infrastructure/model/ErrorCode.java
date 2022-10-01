@@ -1,6 +1,7 @@
 package com.baidarka.booking.infrastructure.model;
 
 import com.baidarka.booking.infrastructure.exception.*;
+import lombok.Getter;
 
 public enum ErrorCode {
     DATA_IS_NOT_VALID {
@@ -25,6 +26,23 @@ public enum ErrorCode {
         @Override
         public BaseRuntimeException get(String message) {
             return new DataAccessException(message);
+        }
+    },
+    UNKNOWN {
+        @Override
+        public BaseRuntimeException get(String message) {
+            return new UnknownException(message);
+        }
+    },
+    DATA_ACCESS_FORBIDDEN {
+        @Override
+        public BaseRuntimeException get(String message) {
+            return new DataAccessForbiddenException(message);
+        }
+    }, BUSINESS {
+        @Override
+        public BaseRuntimeException get(String message) {
+            return new BusinessException(message);
         }
     };
 

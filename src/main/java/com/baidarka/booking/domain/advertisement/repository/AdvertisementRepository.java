@@ -17,7 +17,7 @@ public interface AdvertisementRepository extends Repository<AdvertisementProject
                                             WHERE name = :name
                     )
                     """)
-    boolean isExists(@Param("name") String name);
+    boolean isExistsBy(@Param("name") String name);
 
     @Query(value = """
                     SELECT EXISTS(
@@ -25,7 +25,7 @@ public interface AdvertisementRepository extends Repository<AdvertisementProject
                                             WHERE id = :id AND is_activated = true
                     )
                     """)
-    boolean isExists(@Param("id") UUID id);
+    boolean isExistsBy(@Param("id") UUID id);
 
     @Query(value = """
                     INSERT INTO advertisement(
@@ -84,4 +84,18 @@ public interface AdvertisementRepository extends Repository<AdvertisementProject
             rowMapperClass = AdvertisementRowMapper.class)
     AdvertisementProjection findAdvertisementBy(@Param("subCategoryId") Long subCategoryId,
                                                 @Param("advertisementId") UUID advertisementId);
+
+    @Query(value = """
+                    SELECT name FROM advertisement WHERE id = :advertisementId
+                    """)
+    String findAdvertisementNameBy(@Param("advertisementId") UUID advertisementId);
+
+    @Query(value = """
+                    SELECT EXISTS (
+                                    SELECT id FROM advertisement
+                                                WHERE primary_user_id = :primaryUserId
+                                                AND id = :advertisementId)
+                    """)
+    boolean isOwnerBy(@Param("primaryUserId") Long primaryUserId,
+                      @Param("advertisementId") UUID advertisementId);
 }
