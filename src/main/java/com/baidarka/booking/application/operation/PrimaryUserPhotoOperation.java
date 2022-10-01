@@ -10,13 +10,10 @@ import com.baidarka.booking.interfaces.dto.PhotoDownloadRequest;
 import com.baidarka.booking.interfaces.dto.PhotoDownloadResponse;
 import com.baidarka.booking.interfaces.dto.PhotoRequest;
 import com.baidarka.booking.interfaces.facade.PhotoConversationFacade;
-import com.baidarka.booking.interfaces.mapper.PresignedUrlToDownloadPhotoResponse;
+import com.baidarka.booking.interfaces.mapper.PresignedUrlToDownloadPhotoResponseMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import static com.baidarka.booking.infrastructure.config.EhCacheConfig.CACHE;
 import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_IS_NOT_VALID;
 import static com.baidarka.booking.infrastructure.model.PhotoType.PRIMARY_USER;
 
@@ -45,9 +42,6 @@ public class PrimaryUserPhotoOperation implements PhotoOperation<PhotoRequest, P
     }
 
     @Override
-    @Cacheable(
-            cacheNames = CACHE,
-            key = "#request.id")
     public PhotoDownloadResponse download(PhotoDownloadRequest request) {
         final var key = adapter.findKeyBy(request.getId());
 
@@ -56,15 +50,12 @@ public class PrimaryUserPhotoOperation implements PhotoOperation<PhotoRequest, P
 
         generatePresignedUrlRequest.withExpiration(getAsDate());
 
-        return PresignedUrlToDownloadPhotoResponse.MAPPER.mapFrom(
+        return PresignedUrlToDownloadPhotoResponseMapper.MAPPER.mapFrom(
                 service.download(generatePresignedUrlRequest, PRIMARY_USER),
                 generatePresignedUrlRequest);
     }
 
     @Override
-    @CacheEvict(
-            cacheNames = CACHE,
-            key = "#keycloakUserId")
     public void delete(String keycloakUserId) {
         final var deleteObjectRequest =
                 new DeleteObjectRequest(

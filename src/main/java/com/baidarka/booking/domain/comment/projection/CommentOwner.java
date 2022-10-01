@@ -1,13 +1,10 @@
 package com.baidarka.booking.domain.comment.projection;
 
 import com.baidarka.booking.domain.signup.projection.PrimaryUserProjection;
-import com.baidarka.booking.infrastructure.config.Spring;
-import com.baidarka.booking.infrastructure.utility.BasedOwner;
 import com.baidarka.booking.interfaces.mapper.UserRepresentationToCommentOwnerMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.keycloak.admin.client.resource.UsersResource;
 
 import static com.baidarka.booking.infrastructure.utility.BasedOwner.getUserRepresentation;
 

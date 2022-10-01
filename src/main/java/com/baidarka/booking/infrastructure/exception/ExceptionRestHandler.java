@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
 
+import static java.time.Instant.now;
+
 @RestControllerAdvice
 public class ExceptionRestHandler {
 
@@ -61,6 +63,6 @@ public class ExceptionRestHandler {
         String exception;
         String message;
         ErrorType type;
-        Instant timestamp = Instant.now();
+        Instant timestamp = now();
     }
 }

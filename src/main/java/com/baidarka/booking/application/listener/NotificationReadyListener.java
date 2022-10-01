@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
+import static com.baidarka.booking.domain.notification.projection.NotificationProjection.builder;
 
 @Component
 @RequiredArgsConstructor
@@ -23,10 +23,10 @@ public class NotificationReadyListener {
         final var attributes =
                 IntStream.range(0, event.getArgs().length)
                         .boxed()
-                        .collect(toMap(Function.identity(), index -> event.getArgs()[index]));
+                        .collect(toMap(identity(), index -> event.getArgs()[index]));
 
         final var notification =
-                NotificationProjection.builder()
+                builder()
                         .notificationType(event.getNotificationType())
                         .primaryUser(event.getPrimaryUser())
                         .attributes(attributes)

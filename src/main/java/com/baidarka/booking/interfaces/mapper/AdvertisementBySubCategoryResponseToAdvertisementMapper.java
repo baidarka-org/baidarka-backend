@@ -6,9 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface GetAdvertisementBySubCategoryResponseToAdvertisementProjectionMapper {
-    GetAdvertisementBySubCategoryResponseToAdvertisementProjectionMapper MAPPER =
-            Mappers.getMapper(GetAdvertisementBySubCategoryResponseToAdvertisementProjectionMapper.class);
+public interface AdvertisementBySubCategoryResponseToAdvertisementMapper {
+    AdvertisementBySubCategoryResponseToAdvertisementMapper MAPPER =
+            Mappers.getMapper(AdvertisementBySubCategoryResponseToAdvertisementMapper.class);
 
     AdvertisementsBySubCategoryResponse mapFrom(AdvertisementProjection advertisement);
 }

@@ -17,7 +17,7 @@ public interface CommentRepository extends Repository<CommentProjection, UUID> {
                                 (id, review, rating, primary_user_id)
                                     VALUES (:id, :review, :rating, :primaryUserId)
                     """)
-    void insertComment(@Param("id") UUID id,
+    void insert(@Param("id") UUID id,
                 @Param("review") String review,
                 @Param("rating") Integer rating,
                 @Param("primaryUserId") Long primaryUserId);
@@ -28,8 +28,8 @@ public interface CommentRepository extends Repository<CommentProjection, UUID> {
                                 (advertisement_id, comment_id)
                                     VALUES (:advertisementId, :commentId)
                     """)
-    void insertCommentIntoAdvertisement(@Param("advertisementId") UUID advertisementId,
-                @Param("commentId") UUID commentId);
+    void insertIntoAdvertisement(@Param("advertisementId") UUID advertisementId,
+                                 @Param("commentId") UUID commentId);
 
     @Query(value = """
                     SELECT c.review, c.rating, c.uploaded_at, 
@@ -40,7 +40,7 @@ public interface CommentRepository extends Repository<CommentProjection, UUID> {
                             WHERE ac.advertisement_id = :advertisementId
                     """,
             rowMapperClass = CommentRowMapper.class)
-    List<CommentProjection> findByAdvertisementId(@Param("advertisementId") UUID advertisementId);
+    List<CommentProjection> findCommentBy(@Param("advertisementId") UUID advertisementId);
 
     @Query(value = """
                     SELECT EXISTS (SELECT primary_user_id FROM advertisement_comment ac 
@@ -48,6 +48,6 @@ public interface CommentRepository extends Repository<CommentProjection, UUID> {
                                                             WHERE ac.advertisement_id = :advertisementId
                                                             AND c.primary_user_id = :primaryUserId)
                     """)
-    boolean isAlreadyCommented(@Param("advertisementId") UUID advertisementId,
-                               @Param("primaryUserId") Long primaryUserId);
+    boolean isAlreadyCommentedBy(@Param("advertisementId") UUID advertisementId,
+                                 @Param("primaryUserId") Long primaryUserId);
 }

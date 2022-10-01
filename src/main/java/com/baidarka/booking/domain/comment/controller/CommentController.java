@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import static com.baidarka.booking.infrastructure.utility.RoleExpression.AUTHENTICATED;
 import static com.baidarka.booking.infrastructure.utility.RoleExpression.CLIENT;
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("api/v1/comment")
@@ -30,16 +31,12 @@ public class CommentController {
 
         operation.save(request, keycloakUserId);
 
-        return ResponseEntity
-                .ok()
-                .build();
+        return ok().build();
     }
 
     @GetMapping("{advertisementId}")
     @PreAuthorize(AUTHENTICATED)
     public ResponseEntity<List<CommentResponse>> get(@PathVariable UUID advertisementId) {
-        return ResponseEntity
-                .ok()
-                .body(operation.getBy(advertisementId));
+        return ok().body(operation.getBy(advertisementId));
     }
 }

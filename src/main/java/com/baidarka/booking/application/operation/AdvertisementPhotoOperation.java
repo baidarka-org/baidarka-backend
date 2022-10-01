@@ -13,17 +13,14 @@ import com.baidarka.booking.interfaces.dto.AdvertisementPhotoRequest;
 import com.baidarka.booking.interfaces.dto.PhotoDownloadRequest;
 import com.baidarka.booking.interfaces.dto.PhotoDownloadResponse;
 import com.baidarka.booking.interfaces.facade.PhotoConversationFacade;
-import com.baidarka.booking.interfaces.mapper.PresignedUrlToDownloadPhotoResponse;
+import com.baidarka.booking.interfaces.mapper.PresignedUrlToDownloadPhotoResponseMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.baidarka.booking.infrastructure.config.EhCacheConfig.CACHE;
 import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_ACCESS_FORBIDDEN;
 import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_IS_NOT_VALID;
 import static com.baidarka.booking.infrastructure.model.PhotoType.ADVERTISEMENT;
@@ -78,9 +75,6 @@ public class AdvertisementPhotoOperation implements PhotoOperation<Advertisement
     }
 
     @Override
-    @Cacheable(
-            cacheNames = CACHE,
-            key = "#request.id")
     public List<PhotoDownloadResponse> download(PhotoDownloadRequest request) {
         final var keys = adapter.findKeysBy(request.getId());
 
@@ -93,15 +87,13 @@ public class AdvertisementPhotoOperation implements PhotoOperation<Advertisement
 
                     final var presignedUrl = s3Service.download(generatePresignedUrlRequest, ADVERTISEMENT);
 
-                    return PresignedUrlToDownloadPhotoResponse.MAPPER.mapFrom(presignedUrl, generatePresignedUrlRequest);
+                    return PresignedUrlToDownloadPhotoResponseMapper.MAPPER
+                            .mapFrom(presignedUrl, generatePresignedUrlRequest);
                 })
                 .toList();
     }
 
     @Override
-    @CacheEvict(
-            cacheNames = CACHE,
-            key = "#request.advertisementId")
     public void delete(AdvertisementDeleteRequest request) {
         if (checkIfOwnerBy(request.getKeycloakUserId(), request.getAdvertisementId())) {
              throw ExceptionFactory.factory()

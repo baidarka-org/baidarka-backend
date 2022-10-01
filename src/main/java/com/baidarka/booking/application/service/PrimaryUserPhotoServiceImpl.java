@@ -3,13 +3,13 @@ package com.baidarka.booking.application.service;
 import com.baidarka.booking.domain.photo.projection.PhotoProjection;
 import com.baidarka.booking.domain.photo.primaryuser.repository.PrimaryUserPhotoRepository;
 import com.baidarka.booking.domain.photo.service.PhotoService;
-import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import static com.baidarka.booking.application.service.PrimaryUserServiceImpl.ACCESS_DENIED;
+import static com.baidarka.booking.infrastructure.exception.ExceptionFactory.factory;
 import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_ACCESS_DENIED;
-
 
 @Service
 @RequiredArgsConstructor
@@ -23,19 +23,21 @@ public class PrimaryUserPhotoServiceImpl implements PhotoService {
                     projection.getId(),
                     projection.getKey(), keycloakUserId);
         } catch (DataAccessException dae) {
-            throw ExceptionFactory.factory()
+            throw factory()
                     .code(DATA_ACCESS_DENIED)
+                    .message(ACCESS_DENIED)
                     .get();
         }
     }
 
     @Override
-    public void deleteBy(String key) {
+    public void deletePhotoBy(String key) {
         try {
-            repository.delete(key);
+            repository.deleteBy(key);
         } catch (DataAccessException dae) {
-            throw ExceptionFactory.factory()
+            throw factory()
                     .code(DATA_ACCESS_DENIED)
+                    .message(ACCESS_DENIED)
                     .get();
         }
     }

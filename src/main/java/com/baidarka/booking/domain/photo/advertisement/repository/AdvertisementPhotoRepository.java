@@ -39,5 +39,5 @@ public interface AdvertisementPhotoRepository extends Repository<PhotoProjection
     @Query(value = """
                     DELETE FROM photo WHERE keys = :key
                     """)
-    void delete(@Param("key") String key);
+    void deleteBy(@Param("key") String key);
 }

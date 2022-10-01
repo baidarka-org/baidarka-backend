@@ -40,5 +40,5 @@ public interface PrimaryUserPhotoRepository extends Repository<PhotoProjection, 
                                 WHERE key = :key
                                     AND is_default = false
                     """)
-    void delete(@Param("key") String key);
+    void deleteBy(@Param("key") String key);
 }

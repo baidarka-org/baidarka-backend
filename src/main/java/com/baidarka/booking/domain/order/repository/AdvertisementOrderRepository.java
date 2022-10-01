@@ -46,8 +46,8 @@ public interface AdvertisementOrderRepository extends Repository<AdvertisementOr
                         THEN (SELECT (SELECT aas.seat FROM all_advertisement_seats aas) - sum(dos.seat) FROM date_occupied_seats dos)
                         ELSE (SELECT aas.seat FROM all_advertisement_seats aas) END;
                     """)
-    Integer findFreeSeatBy(@Param("date") LocalDateTime date,
-                           @Param("advertisementId") UUID advertisementId);
+    Integer findFreeSeatsBy(@Param("date") LocalDateTime date,
+                            @Param("advertisementId") UUID advertisementId);
 
     @Query(value = """
                     WITH user_order AS (SELECT arrival, departure

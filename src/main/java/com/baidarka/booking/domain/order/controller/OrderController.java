@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.baidarka.booking.infrastructure.utility.RoleExpression.CLIENT;
 import static com.baidarka.booking.infrastructure.utility.RoleExpression.PERMIT_ALL;
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("api/v1/order")
@@ -26,16 +27,12 @@ public class OrderController {
                                       @RequestBody OrderRequest request) {
         operation.order(request, principal.getName());
 
-        return ResponseEntity
-                .ok()
-                .build();
+        return ok().build();
     }
 
     @PostMapping("seat")
     @PreAuthorize(PERMIT_ALL)
-    public ResponseEntity<FreeSeatsResponse> getFreeSeats(@RequestBody FreeSeatsRequest request) {
-        return ResponseEntity
-                .ok()
-                .body(operation.getFreeSeats(request));
+    public ResponseEntity<FreeSeatsResponse> get(@RequestBody FreeSeatsRequest request) {
+        return ok().body(operation.getFreeSeats(request));
     }
 }

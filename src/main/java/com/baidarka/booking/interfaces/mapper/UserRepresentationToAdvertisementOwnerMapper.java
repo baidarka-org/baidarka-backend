@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface UserRepresentationToAdvertisementOwner {
-    UserRepresentationToAdvertisementOwner MAPPER = Mappers.getMapper(UserRepresentationToAdvertisementOwner.class);
+public interface UserRepresentationToAdvertisementOwnerMapper {
+    UserRepresentationToAdvertisementOwnerMapper MAPPER =
+            Mappers.getMapper(UserRepresentationToAdvertisementOwnerMapper.class);
 
     @Mapping(target = "phoneNumber",
             expression = "java(getPhoneNumber(userRepresentation.getAttributes()))")

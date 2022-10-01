@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import static com.baidarka.booking.infrastructure.utility.DateConverter.convertToLocalDateTimeViaInstant;
+import static com.baidarka.booking.domain.comment.projection.CommentProjection.builder;
 
 public class CommentRowMapper implements RowMapper<CommentProjection> {
     @Override
@@ -20,14 +21,15 @@ public class CommentRowMapper implements RowMapper<CommentProjection> {
                         .keycloakUserId(UUID.fromString(rs.getString("keycloak_user_id")))
                         .build();
 
-        return CommentProjection.builder()
+        final var commentOwner =
+                CommentOwner.builder()
+                        .primaryUser(primaryUser)
+                        .build();
+        return builder()
                 .review(rs.getString("review"))
                 .rating(rs.getInt("rating"))
                 .uploadedAt(convertToLocalDateTimeViaInstant(rs.getDate("uploaded_at")))
-                .commentOwner(
-                        CommentOwner.builder()
-                                .primaryUser(primaryUser)
-                                .build())
+                .commentOwner(commentOwner)
                 .build();
     }
 }

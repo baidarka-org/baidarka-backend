@@ -5,13 +5,13 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.baidarka.booking.infrastructure.utility.S3Property;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.apache.commons.io.FilenameUtils.getName;
@@ -64,7 +64,7 @@ public class PhotoConversationFacade {
     }
 
     private String getEncryptedPhotoNameBy(String photoName, String photoExtension) {
-        return String.format("%d-%s.%s", photoName.hashCode(), randomUUID(), photoExtension);
+        return format("%d-%s.%s", photoName.hashCode(), randomUUID(), photoExtension);
     }
 
     private String getKeyBy(String photoName,
@@ -73,7 +73,7 @@ public class PhotoConversationFacade {
                             String advertisementId) {
         final var originalPhotoName = getName(photoName);
 
-        return String.format("%d/%d/%s",
+        return format("%d/%d/%s",
                 keycloakUserId.hashCode(),
                 advertisementId.hashCode(),
                 getEncryptedPhotoNameBy(originalPhotoName, photoExtension));
@@ -82,7 +82,7 @@ public class PhotoConversationFacade {
     private String getKeyBy(String photoName, String photoExtension, String keycloakUserId) {
         final var originalPhotoName = getName(photoName);
 
-        return String.format("%d/%s",
+        return format("%d/%s",
                 keycloakUserId.hashCode(),
                 getEncryptedPhotoNameBy(originalPhotoName, photoExtension));
     }

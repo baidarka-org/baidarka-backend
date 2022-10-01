@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @RestController
 @RequestMapping("api/v1/notification")
 @RequiredArgsConstructor
@@ -22,8 +24,6 @@ public class NotificationController {
     public ResponseEntity<List<NotificationResponse>> get(@AuthenticationPrincipal KeycloakPrincipal<?> principal) {
         final var keycloakUserId = principal.getName();
 
-        return ResponseEntity
-                .ok()
-                .body(operation.get(keycloakUserId));
+        return ok().body(operation.get(keycloakUserId));
     }
 }

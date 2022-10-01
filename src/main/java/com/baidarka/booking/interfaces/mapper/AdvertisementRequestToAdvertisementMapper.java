@@ -7,9 +7,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface CreateAdvertisementRequestToAdvertisementProjectionMapper {
-    CreateAdvertisementRequestToAdvertisementProjectionMapper MAPPER =
-            Mappers.getMapper(CreateAdvertisementRequestToAdvertisementProjectionMapper.class);
+public interface AdvertisementRequestToAdvertisementMapper {
+    AdvertisementRequestToAdvertisementMapper MAPPER =
+            Mappers.getMapper(AdvertisementRequestToAdvertisementMapper.class);
 
     AdvertisementProjection mapFrom(AdvertisementRequest request, AdvertisementOwner advertisementOwner);
 }

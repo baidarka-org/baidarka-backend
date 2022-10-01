@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.baidarka.booking.infrastructure.utility.RoleExpression.AUTHENTICATED;
+import static org.springframework.http.ResponseEntity.ok;
+import static com.amazonaws.HttpMethod.valueOf;
 
 @RestController
 @RequestMapping("api/v1/photo/{advertisementId}")
@@ -41,9 +43,7 @@ public class AdvertisementPhotoController {
 
         operation.upload(request);
 
-        return ResponseEntity
-                .ok()
-                .build();
+        return ok().build();
     }
 
     @GetMapping
@@ -53,12 +53,10 @@ public class AdvertisementPhotoController {
         final var request =
                 PhotoDownloadRequest.builder()
                         .id(advertisementId)
-                        .method(HttpMethod.valueOf(servlet.getMethod()))
+                        .method(valueOf(servlet.getMethod()))
                         .build();
 
-        return ResponseEntity
-                .ok()
-                .body(operation.download(request));
+        return ok().body(operation.download(request));
     }
 
     @DeleteMapping("{photoId}")
@@ -75,8 +73,6 @@ public class AdvertisementPhotoController {
 
         operation.delete(request);
 
-        return ResponseEntity
-                .ok()
-                .build();
+        return ok().build();
     }
 }

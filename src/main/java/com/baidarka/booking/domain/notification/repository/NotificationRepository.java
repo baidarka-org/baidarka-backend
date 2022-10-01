@@ -28,5 +28,5 @@ public interface NotificationRepository extends Repository<NotificationProjectio
                             WHERE primary_user_id = :primaryUserId
                     """,
             rowMapperClass = NotificationRowMapper.class)
-    List<NotificationProjection> findBy(@Param("primaryUserId") Long primaryUserId);
+    List<NotificationProjection> findNotificationBy(@Param("primaryUserId") Long primaryUserId);
 }

@@ -9,9 +9,9 @@ import org.mapstruct.factory.Mappers;
 import java.net.URL;
 
 @Mapper
-public interface PresignedUrlToDownloadPhotoResponse {
-    PresignedUrlToDownloadPhotoResponse MAPPER =
-            Mappers.getMapper(PresignedUrlToDownloadPhotoResponse.class);
+public interface PresignedUrlToDownloadPhotoResponseMapper {
+    PresignedUrlToDownloadPhotoResponseMapper MAPPER =
+            Mappers.getMapper(PresignedUrlToDownloadPhotoResponseMapper.class);
 
     @Mapping(target = "presignedUrl", expression = "java(presignedUrl.toString())")
     @Mapping(target = "expiresAt", expression = """

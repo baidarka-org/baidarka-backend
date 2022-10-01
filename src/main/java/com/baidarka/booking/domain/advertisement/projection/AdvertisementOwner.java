@@ -1,7 +1,7 @@
 package com.baidarka.booking.domain.advertisement.projection;
 
 import com.baidarka.booking.domain.signup.projection.PrimaryUserProjection;
-import com.baidarka.booking.interfaces.mapper.UserRepresentationToAdvertisementOwner;
+import com.baidarka.booking.interfaces.mapper.UserRepresentationToAdvertisementOwnerMapper;
 import lombok.Builder;
 import lombok.Value;
 
@@ -19,7 +19,7 @@ public class AdvertisementOwner {
         final var userRepresentation =
                 getUserRepresentation(primaryUser.getKeycloakUserId().toString());
 
-        return UserRepresentationToAdvertisementOwner
+        return UserRepresentationToAdvertisementOwnerMapper
                 .MAPPER.mapFrom(userRepresentation, primaryUser);
     }
 }

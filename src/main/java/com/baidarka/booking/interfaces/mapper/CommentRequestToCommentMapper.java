@@ -7,9 +7,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface CommentRequestToCommentProjectionMapper {
-    CommentRequestToCommentProjectionMapper MAPPER =
-            Mappers.getMapper(CommentRequestToCommentProjectionMapper.class);
+public interface CommentRequestToCommentMapper {
+    CommentRequestToCommentMapper MAPPER =
+            Mappers.getMapper(CommentRequestToCommentMapper.class);
 
     @Mapping(target = "commentOwner.primaryUser.id", source = "primaryUserId")
     CommentProjection mapFrom(CommentRequest request, Long primaryUserId);

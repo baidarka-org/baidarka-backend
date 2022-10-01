@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static com.baidarka.booking.application.service.PrimaryUserServiceImpl.ACCESS_DENIED;
+import static com.baidarka.booking.infrastructure.exception.ExceptionFactory.factory;
 import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_ACCESS_DENIED;
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
@@ -28,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
         try {
             final var commentId = UUID.randomUUID();
 
-            repository.insertComment(
+            repository.insert(
                     commentId,
                     comment.getReview(),
                     comment.getRating(),
@@ -36,11 +38,25 @@ public class CommentServiceImpl implements CommentService {
                             .getPrimaryUser()
                             .getId());
 
-            repository.insertCommentIntoAdvertisement(
+            repository.insertIntoAdvertisement(
                     comment.getAdvertisementId(),
                     commentId);
         } catch (DataAccessException dae) {
-            throw ExceptionFactory.factory()
+            throw factory()
+                    .code(DATA_ACCESS_DENIED)
+                    .message(ACCESS_DENIED)
+                    .get();
+        }
+    }
+
+    @Override
+    public List<CommentProjection> getBy(UUID advertisementId) {
+        try {
+            return repository.findCommentBy(advertisementId).stream()
+                    .map(CommentProjection::copy)
+                    .toList();
+        } catch (DataAccessException dae) {
+            throw factory()
                     .code(DATA_ACCESS_DENIED)
                     .message(dae.getMessage())
                     .get();
@@ -48,14 +64,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentProjection> getBy(UUID advertisementId) {
-        return repository.findByAdvertisementId(advertisementId).stream()
-                .map(CommentProjection::copy)
-                .toList();
-    }
-
-    @Override
     public boolean isAlreadyCommented(UUID advertisementId, Long primaryUserId) {
-        return repository.isAlreadyCommented(advertisementId, primaryUserId);
+        try {
+            return repository.isAlreadyCommentedBy(advertisementId, primaryUserId);
+        } catch (DataAccessException dae) {
+            throw factory()
+                    .code(DATA_ACCESS_DENIED)
+                    .message(dae.getMessage())
+                    .get();
+        }
     }
 }

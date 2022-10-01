@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 
 import static com.baidarka.booking.infrastructure.utility.RoleExpression.AUTHENTICATED;
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("api/v1/photo")
@@ -35,9 +36,7 @@ public class PrimaryUserPhotoController {
 
         operation.upload(request);
 
-        return ResponseEntity
-                .ok()
-                .build();
+        return ok().build();
     }
 
     @GetMapping
@@ -50,9 +49,7 @@ public class PrimaryUserPhotoController {
                         .method(HttpMethod.valueOf(servlet.getMethod()))
                         .build();
 
-        return ResponseEntity
-                .ok()
-                .body(operation.download(request));
+        return ok().body(operation.download(request));
     }
 
     @DeleteMapping
@@ -60,8 +57,6 @@ public class PrimaryUserPhotoController {
     public ResponseEntity<Void> delete(@AuthenticationPrincipal KeycloakPrincipal<?> principal) {
         operation.delete(principal.getName());
 
-        return ResponseEntity
-                .ok()
-                .build();
+        return ok().build();
     }
 }

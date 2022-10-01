@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import static com.baidarka.booking.infrastructure.utility.RoleExpression.AUTHENTICATED;
 import static com.baidarka.booking.infrastructure.utility.RoleExpression.REPRESENTATIVE;
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("api/v1/advertisement")
@@ -28,25 +29,19 @@ public class AdvertisementController {
     @PreAuthorize(REPRESENTATIVE)
     public ResponseEntity<AdvertisementResponse> create(@AuthenticationPrincipal KeycloakPrincipal<?> principal,
                                                         @RequestBody AdvertisementRequest request) {
-        return ResponseEntity
-                .ok()
-                .body(operation.create(request, principal.getName()));
+        return ok().body(operation.create(request, principal.getName()));
     }
 
     @GetMapping("{subCategoryId}")
     @PreAuthorize(AUTHENTICATED)
-    public ResponseEntity<List<AdvertisementsBySubCategoryResponse>> getBy(@PathVariable Long subCategoryId) {
-        return ResponseEntity
-                .ok()
-                .body(operation.getBy(subCategoryId));
+    public ResponseEntity<List<AdvertisementsBySubCategoryResponse>> get(@PathVariable Long subCategoryId) {
+        return ok().body(operation.getBy(subCategoryId));
     }
 
     @GetMapping("{subCategoryId}/{advertisementId}")
     @PreAuthorize(AUTHENTICATED)
-    public ResponseEntity<AdvertisementBySubCategoryResponse> getBy(@PathVariable Long subCategoryId,
+    public ResponseEntity<AdvertisementBySubCategoryResponse> get(@PathVariable Long subCategoryId,
                                                                     @PathVariable UUID advertisementId) {
-        return ResponseEntity
-                .ok()
-                .body(operation.getBy(subCategoryId, advertisementId));
+        return ok().body(operation.getBy(subCategoryId, advertisementId));
     }
 }

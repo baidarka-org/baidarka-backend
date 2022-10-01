@@ -6,9 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface CommentProjectionToCommentResponseMapper {
-    CommentProjectionToCommentResponseMapper MAPPER =
-            Mappers.getMapper(CommentProjectionToCommentResponseMapper.class);
+public interface CommentToCommentResponseMapper {
+    CommentToCommentResponseMapper MAPPER =
+            Mappers.getMapper(CommentToCommentResponseMapper.class);
 
     CommentResponse mapFrom(CommentProjection comment);
 }

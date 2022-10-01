@@ -9,8 +9,8 @@ import com.baidarka.booking.interfaces.dto.AdvertisementRequest;
 import com.baidarka.booking.interfaces.dto.AdvertisementResponse;
 import com.baidarka.booking.interfaces.dto.AdvertisementsBySubCategoryResponse;
 import com.baidarka.booking.interfaces.mapper.AdvertisementProjectionToGetSingleAdvertisementBySubCategoryResponseMapper;
-import com.baidarka.booking.interfaces.mapper.CreateAdvertisementRequestToAdvertisementProjectionMapper;
-import com.baidarka.booking.interfaces.mapper.GetAdvertisementBySubCategoryResponseToAdvertisementProjectionMapper;
+import com.baidarka.booking.interfaces.mapper.AdvertisementRequestToAdvertisementMapper;
+import com.baidarka.booking.interfaces.mapper.AdvertisementBySubCategoryResponseToAdvertisementMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,11 +27,12 @@ public class AdvertisementOperation {
         final var primaryUser =
                 PrimaryUserProjection.builder()
                         .id(primaryUserService.getPrimaryUserIdBy(keycloakUserId))
-                        .keycloakUserId(UUID.fromString(keycloakUserId)) //todo
+                        .keycloakUserId(UUID.fromString(keycloakUserId))
                         .build();
 
         final var advertisement =
-                CreateAdvertisementRequestToAdvertisementProjectionMapper.MAPPER.mapFrom(request, AdvertisementOwner.get(primaryUser));
+                AdvertisementRequestToAdvertisementMapper.MAPPER
+                        .mapFrom(request, AdvertisementOwner.get(primaryUser));
 
         return AdvertisementResponse.builder()
                 .advertisementId(advertisementService.save(advertisement).toString())
@@ -42,7 +43,7 @@ public class AdvertisementOperation {
         final var advertisements = advertisementService.getAdvertisementsBy(subCategoryId);
 
         return advertisements.stream()
-                .map(GetAdvertisementBySubCategoryResponseToAdvertisementProjectionMapper.MAPPER::mapFrom)
+                .map(AdvertisementBySubCategoryResponseToAdvertisementMapper.MAPPER::mapFrom)
                 .toList();
     }
 

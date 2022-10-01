@@ -10,9 +10,9 @@ import org.mapstruct.factory.Mappers;
 import java.util.UUID;
 
 @Mapper
-public interface OrderRequestToAdvertisementOrderProjectionMapper {
-    OrderRequestToAdvertisementOrderProjectionMapper MAPPER =
-            Mappers.getMapper(OrderRequestToAdvertisementOrderProjectionMapper.class);
+public interface OrderRequestToAdvertisementOrderMapper {
+    OrderRequestToAdvertisementOrderMapper MAPPER =
+            Mappers.getMapper(OrderRequestToAdvertisementOrderMapper.class);
 
     @Mapping(target = "primaryUser.id", source = "primaryUserId")
     @Mapping(target = "orderStatus", expression = "java(OrderStatus.BOOKED)")
