@@ -5,11 +5,13 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
-import com.baidarka.booking.domain.photo.projection.PrimaryUserPhotoProjection;
-import com.baidarka.booking.domain.photo.service.PrimaryUserPhotoService;
+import com.baidarka.booking.domain.photo.projection.PhotoProjection;
 import com.baidarka.booking.domain.photo.service.S3Service;
 import com.baidarka.booking.infrastructure.exception.ExceptionFactory;
+import com.baidarka.booking.infrastructure.model.PhotoType;
+import com.baidarka.booking.interfaces.interpreter.PhotoInterpreter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -23,12 +25,12 @@ import static java.util.UUID.randomUUID;
 @RequiredArgsConstructor
 public class S3ServiceImpl implements S3Service {
     private final TransferManager transferManager;
-    private final PrimaryUserPhotoService service;
+    private final PhotoInterpreter interpreter;
 
     @Async
     @Override
     @SneakyThrows
-    public void upload(PutObjectRequest request, String keycloakUserId) {
+    public void upload(PutObjectRequest request, String id, PhotoType photoType) {
         request.withGeneralProgressListener(progressEvent -> {
             switch (progressEvent.getEventType()) {
                 case CLIENT_REQUEST_FAILED_EVENT ->
@@ -38,12 +40,12 @@ public class S3ServiceImpl implements S3Service {
                                 .get();
                 case CLIENT_REQUEST_SUCCESS_EVENT -> {
                     final var projection =
-                            PrimaryUserPhotoProjection.builder()
+                            PhotoProjection.builder()
                                     .id(randomUUID())
                                     .key(request.getKey())
                                     .build();
 
-                    service.save(projection, keycloakUserId);
+                    interpreter.doTask(photoType).save(projection, id);
                 }
             }
         });
@@ -54,7 +56,7 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
-    public URL download(GeneratePresignedUrlRequest request) {
+    public URL download(GeneratePresignedUrlRequest request, PhotoType photoType) {
         try {
             return transferManager
                     .getAmazonS3Client()
@@ -68,13 +70,13 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
-    public void delete(DeleteObjectRequest request) {
+    public void delete(DeleteObjectRequest request, PhotoType photoType) {
         try {
             transferManager
                     .getAmazonS3Client()
                     .deleteObject(request);
 
-            service.deleteBy(request.getKey());
+            interpreter.doTask(photoType).deleteBy(request.getKey());
         } catch (AmazonServiceException ase) {
             throw ExceptionFactory.factory()
                     .code(MEDIA_OPERATION_FAILED)

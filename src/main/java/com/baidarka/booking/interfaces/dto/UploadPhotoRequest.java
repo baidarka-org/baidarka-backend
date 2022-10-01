@@ -1,12 +1,12 @@
 package com.baidarka.booking.interfaces.dto;
 
-import com.amazonaws.HttpMethod;
 import lombok.Builder;
 import lombok.Value;
+import org.springframework.web.multipart.MultipartFile;
 
 @Value
 @Builder
-public class DownloadPrimaryUserPhotoRequest {
+public class UploadPhotoRequest {
+    MultipartFile photo;
     String keycloakUserId;
-    HttpMethod method;
 }
