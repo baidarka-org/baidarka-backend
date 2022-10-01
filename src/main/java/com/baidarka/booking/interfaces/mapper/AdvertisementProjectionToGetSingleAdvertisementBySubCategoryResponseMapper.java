@@ -19,19 +19,4 @@ public interface AdvertisementProjectionToGetSingleAdvertisementBySubCategoryRes
             target = "advertisementOwner.primaryUser.id",
             expression = "java(primaryUserProjection.getId())")
     AdvertisementBySubCategoryResponse mapFrom(AdvertisementProjection advertisementProjection);
-
-    @Mapping(target = "freeSeats", source = "freeSeats")
-    AdvertisementBySubCategoryResponse mapFrom(AdvertisementBySubCategoryResponse getSingleAdvertisementBySubCategory, FreeSeatsResponse freeSeats);
-
-    default AdvertisementBySubCategoryResponse map(AdvertisementProjection advertisementProjection, Integer seat) {
-        final var mappedAdvertisement =
-                mapFrom(advertisementProjection);
-
-        final var freeSeats =
-                FreeSeatsResponse.builder()
-                        .seat(seat)
-                        .build();
-
-        return mapFrom(mappedAdvertisement, freeSeats);
-    }
 }

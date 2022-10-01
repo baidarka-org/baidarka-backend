@@ -2,7 +2,6 @@ package com.baidarka.booking.application.operation;
 
 import com.baidarka.booking.domain.advertisement.projection.AdvertisementOwner;
 import com.baidarka.booking.domain.advertisement.service.AdvertisementService;
-import com.baidarka.booking.domain.order.service.AdvertisementOrderService;
 import com.baidarka.booking.domain.signup.projection.PrimaryUserProjection;
 import com.baidarka.booking.domain.signup.service.PrimaryUserService;
 import com.baidarka.booking.interfaces.dto.AdvertisementBySubCategoryResponse;
@@ -18,15 +17,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.UUID;
 
-import static java.time.LocalDateTime.now;
-
-
 @Component
 @RequiredArgsConstructor
 public class AdvertisementOperation {
     private final AdvertisementService advertisementService;
     private final PrimaryUserService primaryUserService;
-    private final AdvertisementOrderService advertisementOrderService;
 
     public AdvertisementResponse create(AdvertisementRequest request, String keycloakUserId) {
         final var primaryUser =
@@ -55,10 +50,7 @@ public class AdvertisementOperation {
         final var advertisement =
                 advertisementService.getAdvertisementBy(subCategoryId, advertisementId);
 
-        final var freeSeats =
-                advertisementOrderService.getFreeSeatBy(now(), advertisementId);
-
-        return AdvertisementProjectionToGetSingleAdvertisementBySubCategoryResponseMapper.MAPPER.map(
-                advertisement.copy(), freeSeats);
+        return AdvertisementProjectionToGetSingleAdvertisementBySubCategoryResponseMapper.MAPPER.mapFrom(
+                advertisement.copy());
     }
 }

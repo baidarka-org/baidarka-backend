@@ -19,5 +19,5 @@ public class AdvertisementBySubCategoryResponse {
     boolean isOneDay;
     boolean isMultiDay;
     AdvertisementOwnerResponse advertisementOwner;
-    FreeSeatsResponse freeSeats;
+    //FreeSeatsResponse freeSeats;
 }
