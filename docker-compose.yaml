@@ -6,6 +6,8 @@ services:
     image: nikitaron/baidarka-backend:v1
     ports:
       - '3033:3033'
+    networks:
+      - 'baidarka'
     depends_on:
       - postgres
     restart: unless-stopped
