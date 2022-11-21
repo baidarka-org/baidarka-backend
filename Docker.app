@@ -2,7 +2,7 @@ FROM amazoncorretto:17
 
 COPY target/*.jar baidarka.jar
 
-ENV POSTGRES_HOST=localhost
+ENV POSTGRES_HOST=postgres
 ENV POSTGRES_USERNAME=postgres
 ENV POSTGRES_PASSWORD=postgres
 ENV REALM=master
