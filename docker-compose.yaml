@@ -1,5 +1,9 @@
 version: "3.8"
 
+networks:
+  baidarka:
+    external: true
+
 services:
   baidarka:
     container_name: baidarka.backend.dev
