@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.baidarka.booking.interfaces.dto.NotificationResponse.builder;
 
 @Component
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ public class NotificationOperation {
     public List<NotificationResponse> get(String keycloakUserId) {
         return service.getNotificationsBy(keycloakUserId).stream()
                 .map(notification ->
-                        builder()
+                        NotificationResponse.builder()
                                 .notificationType(notification.getNotificationType())
                                 .attributes(notification.getAttributes())
                                 .pushedAt(notification.getPushedAt())
