@@ -5,9 +5,7 @@ services:
     container_name: baidarka.backend.dev
     image: nikitaron/baidarka-backend:v1
     ports:
-      - '3033:3033'
-    depends_on:
-      - postgres
+      - '3030:3030'
     restart: unless-stopped
     
   postgres:
