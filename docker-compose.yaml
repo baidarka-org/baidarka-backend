@@ -1,17 +1,11 @@
 version: "3.8"
 
-networks:
-  baidarka:
-    external: true
-
 services:
   baidarka:
     container_name: baidarka.backend.dev
     image: nikitaron/baidarka-backend:v1
     ports:
       - '3033:3033'
-    networks:
-      - 'baidarka'
     depends_on:
       - postgres
     restart: unless-stopped
