@@ -9,8 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import static com.baidarka.booking.domain.advertisement.projection.AdvertisementProjection.builder;
-
 public class AdvertisementRowMapper implements RowMapper<AdvertisementProjection> {
     @Override
     public AdvertisementProjection mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -25,7 +23,7 @@ public class AdvertisementRowMapper implements RowMapper<AdvertisementProjection
                         .primaryUser(primaryUser)
                         .build();
 
-        return builder()
+        return AdvertisementProjection.builder()
                 .id(UUID.fromString(rs.getString("id")))
                 .name(rs.getString("name"))
                 .seat(rs.getInt("seat"))

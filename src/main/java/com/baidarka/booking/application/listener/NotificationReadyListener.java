@@ -11,7 +11,6 @@ import java.util.stream.IntStream;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
-import static com.baidarka.booking.domain.notification.projection.NotificationProjection.builder;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class NotificationReadyListener {
                         .collect(toMap(identity(), index -> event.getArgs()[index]));
 
         final var notification =
-                builder()
+                NotificationProjection.builder()
                         .notificationType(event.getNotificationType())
                         .primaryUser(event.getPrimaryUser())
                         .attributes(attributes)

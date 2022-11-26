@@ -1,0 +1,19 @@
+FROM amazoncorretto:17
+
+COPY target/*.jar baidarka.jar
+
+ENV POSTGRES_HOST=postgres
+ENV POSTGRES_USERNAME=postgres
+ENV POSTGRES_PASSWORD=postgres
+ENV REALM=master
+ENV CLIENT=baidarka-client
+ENV KEYCLOAK_HOST=localhost
+ENV KAFKA_HOST=kafka
+ENV AWS_ACCESS_KEY_ID=AKIARE3HQ7QWW6OYPUEG
+ENV AWS_CLIENT_ID=kGa/Jg/6yKBe0eN9Lj6IR4bJfpgSiIbjQBGMbq27
+ENV POSTGRES_DB=baidarka_data_client
+ENV KEYCLOAK_USERNAME=admin
+ENV KEYCLOAK_PASSWORD=26013
+ENV KEYCLOAK_ADMIN_CLIENT=admin-cli
+
+ENTRYPOINT ["java", "-jar", "/baidarka.jar"]

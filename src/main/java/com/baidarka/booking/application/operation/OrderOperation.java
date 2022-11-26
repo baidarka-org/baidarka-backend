@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import static com.baidarka.booking.infrastructure.exception.ExceptionFactory.factory;
 import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_IS_NOT_FOUND;
 import static com.baidarka.booking.infrastructure.model.ErrorCode.DATA_IS_NOT_VALID;
-import static com.baidarka.booking.interfaces.dto.FreeSeatsResponse.builder;
 
 @Component
 @RequiredArgsConstructor
@@ -59,7 +58,7 @@ public class OrderOperation {
                         request.getDate(),
                         request.getAdvertisementId());
 
-        return builder()
+        return FreeSeatsResponse.builder()
                 .seat(freeSeats)
                 .build();
     }

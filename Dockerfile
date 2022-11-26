@@ -10,3 +10,6 @@ WORKDIR /scripts
 #USER postgres
 
 COPY pg_config.sh .
+
+RUN chmod +x ./pg_config.sh \
+    ./pg_config.sh \

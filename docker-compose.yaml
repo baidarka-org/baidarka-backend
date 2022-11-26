@@ -1,12 +1,20 @@
 version: "3.8"
 
 services:
+  baidarka:
+    container_name: baidarka.backend.dev
+    image: nikitaron/baidarka-backend:v1
+    ports:
+      - '3030:3030'
+    restart: unless-stopped
+    
   postgres:
-    container_name: baidarka.postgres.dev.v4
-    image: custom-postgres-v18:latest
+    container_name: baidarka.postgres.dev
+    image: baidarka-postgres:v2
     ports:
       - '5432:5432'
     volumes:
+      - ./pg_cron_extension_creation.sql:/docker-entrypoint-initdb.d/pg_cron_extension_creation.sql
       - /home/lib/baidarka/postgres:/var/lib/baidarka/postgres
     environment:
       POSTGRES_USERNAME: postgres
@@ -83,11 +91,11 @@ services:
     command: |
       "      
       echo -e 'Creating kafka topics'
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic REGISTER --replication-factor 1 --partitions 1 \
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic REGISTER --replication-factor 1 --partitions 1 \
       && \
       echo -e 'Successfully created the following topics:' \
       && \
-      kafka-topics --bootstrap-server kafka:29092 --list 
+      kafka-topics --bootstrap-server kafka:9092 --list 
       "  
 
   kafka-schema-registry:
