@@ -12,7 +12,6 @@ spring:
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
     change-log: classpath:/db/changelog/db.changelog-master.yaml
-    enabled: false
 
   kafka:
     consumer:
