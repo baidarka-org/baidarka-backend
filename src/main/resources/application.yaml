@@ -24,7 +24,7 @@ keycloak:
   realm: ${REALM}
   resource: ${CLIENT}
   auth-server-url: http://${KEYCLOAK_HOST}:8080
-  ssl-required: false
+  ssl-required: none
   #admin-cli: ${KEYCLOAK_ADMIN_CLIENT}
   #username: ${KEYCLOAK_USERNAME}
   #password: ${KEYCLOAK_PASSWORD}
